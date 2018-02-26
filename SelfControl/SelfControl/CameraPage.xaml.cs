@@ -62,18 +62,15 @@ namespace SelfControl
             Console.WriteLine("Answer: " + answer);
             clicked = false;
             FoodItem item = new FoodItem();
-            item.ID = 0;
-            item.DATE = mDateTime;
-            item.NAME = mFoodName;
-            item.PATH = mFileName;
-            item.HOTEFFECT = answer;
-            item.COOLEFFECT = !answer;
-
-            var resizer = DependencyService.Get<IImageResize>();
-            imageAsBytes = resizer.ResizeImage(imageAsBytes, 1080, 1080);
-            var imageSource = ImageSource.FromStream(() => new MemoryStream(imageAsBytes));
-            GalleryPageModel._images.Add(new GalleryImage { Source = imageSource, OrgImage = imageAsBytes });
-
+            if (mFoodName != string.Empty)
+            {
+                item.ID = 0;
+                item.DATE = mDateTime;
+                item.NAME = mFoodName;
+                item.PATH = mFileName;
+                item.HOTEFFECT = answer;
+                item.COOLEFFECT = !answer;
+            }
             if (cm != null)
             {
                 await cm.SaveItemAsync(item);

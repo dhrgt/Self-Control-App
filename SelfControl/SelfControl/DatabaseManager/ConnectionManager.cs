@@ -46,5 +46,11 @@ namespace SelfControl.DatabaseManager
                 Console.WriteLine("Food Item: " + s.ID + " " + s.NAME);
             }
         }
+
+        public List<FoodItem> QueryByDateTime()
+        {
+            var query = database.QueryAsync<FoodItem>(DatabaseQuery.orderByDateTime, FoodItem.dateTimeCol);
+            return query.Result;
+        }
     }
 }

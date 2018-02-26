@@ -72,6 +72,7 @@
     <Compile Include="Helpers\Listeners\ImageAvailableListener.cs" />
     <Compile Include="Helpers\Listeners\ImageConfirmationAnimationListener.cs" />
     <Compile Include="Helpers\Listeners\ImageEndAnimation.cs" />
+    <Compile Include="Helpers\ResizeImageAndroid.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderers\CameraPageRenderer.cs" />
     <Compile Include="Renderers\ImageDisplayRenderer.cs" />
