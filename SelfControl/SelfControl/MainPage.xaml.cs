@@ -92,7 +92,7 @@ namespace SelfControl
                 }
             };
         }
-
+        
         async void OnCameraButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new CameraPage(), true);

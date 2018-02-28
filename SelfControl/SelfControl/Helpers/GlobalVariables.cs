@@ -14,5 +14,21 @@ namespace SelfControl.Helpers
         public const string IMAGE_PAGE_QUESTION = "Do you want to eat more of this?";
 
         public const string DATABASE_NAME = "foodDB.db3";
+
+        public enum AspectRatio
+        {
+            FourByThree = 1,
+            SixteenByNine = 2
+        }
+
+        public static AspectRatio GetAspectRatio(int width, int height)
+        {
+            double aspectRatio = (double)Math.Max(width, height) / (double)Math.Min(width, height);
+            if (aspectRatio == 16.0 / 9.0)
+            {
+                return AspectRatio.SixteenByNine;
+            }
+            return AspectRatio.FourByThree;
+        }
     }
 }

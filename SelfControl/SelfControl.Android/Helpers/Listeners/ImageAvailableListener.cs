@@ -29,6 +29,8 @@ namespace SelfControl.Droid.Helpers.Listeners
 
         private File file;
         private readonly CameraFragment owner;
+        public int imgWidth;
+        public int imgHeight;
 
         //public File File { get; private set; }
         //public Camera2BasicFragment Owner { get; private set; }
@@ -36,7 +38,10 @@ namespace SelfControl.Droid.Helpers.Listeners
         public void OnImageAvailable(ImageReader reader)
         {
             file = owner.mFile;
-            owner.mBackgroundHandler.Post(new ImageSaver(reader.AcquireNextImage(), file));
+            Image image = reader.AcquireNextImage();
+            imgWidth = image.Width;
+            imgHeight = image.Height;
+            owner.mBackgroundHandler.Post(new ImageSaver(image, file));
         }
 
         // Saves a JPEG {@link Image} into the specified {@link File}.

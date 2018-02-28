@@ -3,5 +3,6 @@
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="24" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<application android:label="SelfControl.Android"></application>
+	<application android:label="SelfControl.Android"
+               android:largeHeap="true"></application>
 </manifest>

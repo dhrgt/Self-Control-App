@@ -632,9 +632,9 @@ namespace SelfControl.Droid.Helpers
         }
 
         void AfterPicture()
-        { 
-            int rotation = (int)Activity.WindowManager.DefaultDisplay.Rotation;
-            mCPR.NavigateImageQuestionPage(mFile.AbsolutePath.ToString(), mCaptureTime);
+        {
+            int rotation = GetOrientation((int)Activity.WindowManager.DefaultDisplay.Rotation);
+            mCPR.NavigateImageQuestionPage(mFile.AbsolutePath.ToString(), mCaptureTime, mOnImageAvailableListener.imgWidth, mOnImageAvailableListener.imgHeight, rotation);
         }
         
         public void UnlockFocus()

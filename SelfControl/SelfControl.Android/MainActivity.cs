@@ -21,6 +21,8 @@ namespace SelfControl.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+            App.ScreenWidth = (int)(Resources.DisplayMetrics.WidthPixels / Resources.DisplayMetrics.Density);
+            App.ScreenHeight = (int)(Resources.DisplayMetrics.HeightPixels / Resources.DisplayMetrics.Density);
             LoadApplication(new App());
         }
     }

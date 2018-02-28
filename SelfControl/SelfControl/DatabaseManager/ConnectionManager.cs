@@ -47,10 +47,10 @@ namespace SelfControl.DatabaseManager
             }
         }
 
-        public List<FoodItem> QueryByDateTime()
+        async public Task<List<FoodItem>> QueryByDateTime()
         {
-            var query = database.QueryAsync<FoodItem>(DatabaseQuery.orderByDateTime, FoodItem.dateTimeCol);
-            return query.Result;
+            var query = await database.QueryAsync<FoodItem>(DatabaseQuery.orderByDateTime, FoodItem.dateTimeCol);
+            return query;
         }
     }
 }

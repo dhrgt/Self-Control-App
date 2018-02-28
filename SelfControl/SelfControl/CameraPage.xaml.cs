@@ -19,6 +19,7 @@ namespace SelfControl
         bool clicked;
         ConnectionManager cm;
         DateTime mDateTime;
+        int mWidth, mHeight, mOrientation;
 
         public CameraPage ()
 		{
@@ -32,7 +33,7 @@ namespace SelfControl
             okButton.Clicked += OnAlertYesNoClicked;
         }
 
-        public void PictureClickedHandler(string file, DateTime dateTime)
+        public void PictureClickedHandler(string file, DateTime dateTime, int width, int height, int orientation)
         {
             clicked = true;
             EnteredName.Text = string.Empty;
@@ -40,6 +41,9 @@ namespace SelfControl
             EnteredName.Focus();
             mFileName = file;
             mDateTime = dateTime;
+            mWidth = width;
+            mHeight = height;
+            mOrientation = orientation;
         }
 
         void OnOKButtonClicked(object sender, EventArgs args)
@@ -70,6 +74,9 @@ namespace SelfControl
                 item.PATH = mFileName;
                 item.HOTEFFECT = answer;
                 item.COOLEFFECT = !answer;
+                item.IMGWIDTH = mWidth;
+                item.IMGHEIGHT = mHeight;
+                item.IMGORIENTATION = mOrientation;
             }
             if (cm != null)
             {
