@@ -21,7 +21,7 @@ namespace SelfControl.Droid.Renderers
     class ImageDisplayRenderer : ImageRenderer
     {
         Activity mActivity;
-        bool isSelected;
+        Bitmap rotatedBitmap;
         public ImageDisplayRenderer(Context context) : base(context)
         {
             
@@ -32,24 +32,7 @@ namespace SelfControl.Droid.Renderers
             base.OnElementChanged(e);
             Control.Invalidate();
         }
-
-        private bool _isDecoded;
-
-        protected override void OnDraw(Canvas canvas)
-        {
-            base.OnDraw(canvas);
-            if (isSelected)
-            {
-                Paint p = new Paint();
-                p.SetStyle(Paint.Style.Stroke);
-                p.AntiAlias = true;
-                p.FilterBitmap = true;
-                p.Color = Android.Graphics.Color.Red;
-
-                canvas.DrawRect(0, 0, canvas.Width, canvas.Height, p);
-            }
-        }
-
+        
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             base.OnElementPropertyChanged(sender, e);
@@ -57,28 +40,39 @@ namespace SelfControl.Droid.Renderers
             var image = (SelfControl.Helpers.ImageDisplay)Element;
             var file = image.ImageFile;
             var bytes = image.ImageByte;
-            isSelected = image.IsSelected;
-            if ((Element.Width > 0 && Element.Height > 0 && !_isDecoded))
+            var IsSelected = image.IsSelected;
+
+            if ((Element.Width > 0 && Element.Height > 0))
             {
                 if (file != null)
                 {
-                    Bitmap rotatedBitmap = GlobalHelpers.LoadBitmap(mActivity, file);
+                    rotatedBitmap = null;
+                    rotatedBitmap = GlobalHelpers.LoadBitmap(mActivity, file);
                     Control.SetImageBitmap(rotatedBitmap);
                 }
                 else if(bytes != null)
                 {
+                    rotatedBitmap = null;
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.InMutable = true;
                     Bitmap img = BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length, options);
                     Matrix matrix = new Matrix();
                     matrix.PostRotate(90, img.Width / 2, img.Height / 2);
-                    Bitmap rotatedBitmap = Bitmap.CreateBitmap(img, 0, 0, img.Width, img.Height, matrix, true);
+                    rotatedBitmap = Bitmap.CreateBitmap(img, 0, 0, img.Width, img.Height, matrix, true);
                     img.Recycle();
                     Control.SetImageBitmap(rotatedBitmap);
                 }
+                if(rotatedBitmap != null && IsSelected)
+                {
+                    Canvas canvas = new Canvas(rotatedBitmap);
+                    Paint paint = new Paint();
+                    paint.SetARGB(165, 0, 0, 0);
+                    paint.SetStyle(Paint.Style.Fill);
+                    paint.StrokeWidth = 2;
+                    canvas.DrawRect(0, 0, rotatedBitmap.Width, rotatedBitmap.Height, paint);
+                    Control.SetImageBitmap(rotatedBitmap);
+                }
                 //Control.Invalidate();
-
-                _isDecoded = true;
             }
         }
     }

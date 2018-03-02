@@ -20,6 +20,11 @@ namespace SelfControl.Helpers
             }
         });
 
+        public static readonly BindableProperty ImageIdProperty =
+        BindableProperty.Create("ID", typeof(int), typeof(ImageDisplay), -1, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+        });
+
         public static readonly BindableProperty IsSelectedProperty =
         BindableProperty.Create("IsSelected", typeof(bool), typeof(ImageDisplay), false, propertyChanged: (bindable, oldValue, newValue) =>
         {
@@ -53,6 +58,12 @@ namespace SelfControl.Helpers
         {
             get { return (bool)GetValue(IsSelectedProperty); }
             set { SetValue(IsSelectedProperty, value); }
+        }
+
+        public int ID
+        {
+            get { return (int)GetValue(ImageIdProperty); }
+            set { SetValue(ImageIdProperty, value); }
         }
     }
 }

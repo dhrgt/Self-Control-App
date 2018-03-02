@@ -52,5 +52,11 @@ namespace SelfControl.DatabaseManager
             var query = await database.QueryAsync<FoodItem>(DatabaseQuery.orderByDateTime, FoodItem.dateTimeCol);
             return query;
         }
+
+        async public Task<List<FoodItem>> QueryById(int id)
+        {
+            var query = await database.QueryAsync<FoodItem>(DatabaseQuery.getItemById, id);
+            return query;
+        }
     }
 }
