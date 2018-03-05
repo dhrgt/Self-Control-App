@@ -21,6 +21,26 @@ namespace SelfControl.Helpers
             SixteenByNine = 2
         }
 
+        public static string[] FrequencyResult =
+        {
+            "Never",
+            "Rarely",
+            "Sometimes",
+            "Often",
+            "Frequently"
+        };
+
+        public static string[] HealthResult =
+        {
+            "Very Unhealthy",
+            "Unhealthy",
+            "Somewhat Unhealthy",
+            "Neutral",
+            "Somewhat Healthy",
+            "Healthy",
+            "Very Healthy",
+        };
+
         public static AspectRatio GetAspectRatio(int width, int height)
         {
             double aspectRatio = (double)Math.Max(width, height) / (double)Math.Min(width, height);

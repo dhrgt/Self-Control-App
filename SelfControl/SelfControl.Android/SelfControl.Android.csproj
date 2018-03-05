@@ -76,6 +76,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderers\CameraPageRenderer.cs" />
     <Compile Include="Renderers\ImageDisplayRenderer.cs" />
+    <Compile Include="Renderers\SliderEffect.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

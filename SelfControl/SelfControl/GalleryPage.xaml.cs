@@ -30,7 +30,7 @@ namespace SelfControl
             InitializeComponent ();
             Title = "Gallery";
             ToolbarItem deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
-            ToolbarItem editOption = new ToolbarItem("Edit", "", new Action(() => { Navigation.PushModalAsync(new EditDetailsPage(previewImage.ID)); }), ToolbarItemOrder.Secondary, 0);
+            ToolbarItem editOption = new ToolbarItem("Edit", "", new Action(() => { Navigation.PushAsync(new EditDetailsPage(previewImage.ID, previewImage.ImageByte)); }), ToolbarItemOrder.Secondary, 0);
             ToolbarItem detailsOption = new ToolbarItem("Details", "", new Action(async () => { await DisplayAlert("Details", await SetDetails(previewImage.ID), "OK"); }), ToolbarItemOrder.Secondary, 1);
             ToolbarItems.Add(deleteOption);
             ToolbarItems.Add(editOption);
