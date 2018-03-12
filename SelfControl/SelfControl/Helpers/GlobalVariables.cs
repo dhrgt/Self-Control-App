@@ -4,10 +4,12 @@ using System.Text;
 
 namespace SelfControl.Helpers
 {
-    class GlobalVariables
+    public class GlobalVariables
     {
         public const int STAGE_1 = 1;
         public const int STAGE_2 = 2;
+
+        public const int SIZE_OF_FOOD_LIBRARY = 3;
 
         public const double CAMERA_PREVIEW_SCALE = 1.0;
 
@@ -40,6 +42,12 @@ namespace SelfControl.Helpers
             "Healthy",
             "Very Healthy",
         };
+
+        public enum EntryType
+        {
+            NEW_ENTRY = 0,
+            UPDATE_ENTRY = 1
+        }
 
         public static AspectRatio GetAspectRatio(int width, int height)
         {

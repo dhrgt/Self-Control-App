@@ -15,8 +15,7 @@ namespace SelfControl.Helpers.Pages
 	public partial class EditDetailsPage : ContentPage
 	{
         int mID;
-
-        byte[] imageBytes;
+        
         Entry mName;
         CustomSlider mFrequencySlider;
         CustomSlider mPlanSlider;
@@ -24,22 +23,23 @@ namespace SelfControl.Helpers.Pages
         Label FrequencyResultLabel;
         Label PlanResultLabel;
         Label HealthResultLabel;
+        bool dirty;
+
+        GlobalVariables.EntryType EntryType;
 
         RelativeLayout view;
 
         ConnectionManager cm;
+        FoodItem food;
 
-        public EditDetailsPage(byte[] image)
-        {
-            new EditDetailsPage(-1, image);
-        }
-        public EditDetailsPage (int id, byte[] image)
+        public EditDetailsPage (int id, byte[] image, GlobalVariables.EntryType e)
 		{
+            dirty = false;
             cm = new ConnectionManager(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(SelfControl.Helpers.GlobalVariables.DATABASE_NAME));
 			InitializeComponent ();
             NavigationPage.SetHasNavigationBar(this, true);
             Title = "Edit Details";
-            
+            EntryType = e;
             mID = id;
 
             mName = new Entry
@@ -47,29 +47,31 @@ namespace SelfControl.Helpers.Pages
                 WidthRequest = 200,
                 Placeholder = " Name",
             };
+            mName.Completed += OnNameChanged;
+            mName.Unfocused += OnNameChanged;
             mFrequencySlider = new CustomSlider
             {
                 Maximum = 4.0,
-                Minimum = 0.0
+                Minimum = 0.0,
+                Value = 2.0
             };
             mFrequencySlider.ValueChanged += OnFrequencySliderValueChanged;
-            mFrequencySlider.Value = 2.0;
 
             mHealthSlider = new CustomSlider
             {
                 Maximum = 6.0,
-                Minimum = 0.0
+                Minimum = 0.0,
+                Value = 3.0
             };
             mHealthSlider.ValueChanged += OnHealthSliderValueChanged;
-            mFrequencySlider.Value = 3.0;
 
             mPlanSlider = new CustomSlider
             {
                 Maximum = 4.0,
-                Minimum = 0.0
+                Minimum = 0.0,
+                Value = 2.0
             };
             mPlanSlider.ValueChanged += OnFrequencySliderValueChanged;
-            mPlanSlider.Value = 2.0;
 
             Label nameLabel = new Label
             {
@@ -81,7 +83,7 @@ namespace SelfControl.Helpers.Pages
             {
                 Text = "How frequently do you eat this?",
                 TextColor = Color.Black,
-                FontSize = 25,
+                FontSize = 20,
                 Margin = 20
             };
             FrequencyResultLabel = new Label
@@ -106,14 +108,14 @@ namespace SelfControl.Helpers.Pages
             {
                 Text = "How much do you plan to eat this in the future?",
                 TextColor = Color.Black,
-                FontSize = 25,
+                FontSize = 20,
                 Margin = 20
             };
             Label HealthLabel = new Label
             {
                 Text = "How healthy do you think this food is?",
                 TextColor = Color.Black,
-                FontSize = 25,
+                FontSize = 20,
                 Margin = 20
             };
 
@@ -163,6 +165,18 @@ namespace SelfControl.Helpers.Pages
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start
             };
+
+            List<string> list = new List<string>();
+            list.Add("1"); list.Add("2"); list.Add("3");
+
+            CustomRadioGroup radioGroup = new CustomRadioGroup
+            {
+                ItemsSource = list,
+                SelectedIndex = 1,
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+
             questionsView.Children.Add(FrequencyLabel);
             questionsView.Children.Add(mFrequencySlider);
             questionsView.Children.Add(FrequencyResultLabel);
@@ -172,6 +186,7 @@ namespace SelfControl.Helpers.Pages
             questionsView.Children.Add(PlanLabel);
             questionsView.Children.Add(mPlanSlider);
             questionsView.Children.Add(PlanResultLabel);
+            questionsView.Children.Add(radioGroup);
 
             view.Children.Add(questionsView, Constraint.RelativeToView(imageView,
                 (Parent, sibling) =>
@@ -188,37 +203,68 @@ namespace SelfControl.Helpers.Pages
             {
                 Text = "Done"
             };
+            doneButton.Clicked += OnDoneClicked;
             Button cancelButton = new Button
             {
                 Text = "Cancel"
             };
+            cancelButton.Clicked += OnCancelClicked;
 
             view.Children.Add(cancelButton, Constraint.RelativeToParent(
                 (Parent) =>
                 {
-                    return Parent.X + 30;
+                    return Parent.X;
                 }),
                 Constraint.RelativeToParent(
                 (Parent) =>
                 {
-                    return Parent.Height - cancelButton.Height - 5;
+                    return Parent.Height - 40;
+                }),
+                Constraint.RelativeToParent(
+                (Parent) =>
+                {
+                    return Parent.Width * 0.5;
+                }),
+                Constraint.RelativeToParent(
+                (Parent) =>
+                {
+                    return 40;
                 }));
             view.Children.Add(doneButton, Constraint.RelativeToView(cancelButton,
                 (Parent, sibling) =>
                 {
-                    return sibling.Width + 30;
+                    return sibling.Width;
                 }),
                 Constraint.RelativeToParent(
                 (Parent) =>
                 {
-                    return Parent.Height - doneButton.Height - 5;
+                    return Parent.Height - 40;
+                }),
+                Constraint.RelativeToParent(
+                (Parent) =>
+                {
+                    return Parent.Width * 0.5;
+                }),
+                Constraint.RelativeToParent(
+                (Parent) =>
+                {
+                    return 40;
                 }));
 
-            if (mID != -1)
-                populateFields();
-            else
-                Update();
+            populateFields();
 		}
+
+        private void OnNameChanged(object sender, EventArgs e)
+        {
+            if (food.NAME != mName.Text)
+            {
+                dirty = true;
+            }
+            else
+            {
+                dirty = false;
+            }
+        }
 
         public void Update()
         {
@@ -232,8 +278,17 @@ namespace SelfControl.Helpers.Pages
         {
             Task.Run(async() => {
                 List<FoodItem> f = await cm.QueryById(mID);
-                FoodItem food = f.First();
-                mName.Text = food.NAME;
+                food = f.First();
+                if (EntryType == GlobalVariables.EntryType.UPDATE_ENTRY)
+                {
+                    mName.Text = food.NAME;
+                    mFrequencySlider.Value = food.FREQUENCY;
+                    mHealthSlider.Value = food.HEALTH;
+                    mPlanSlider.Value = food.PLAN;
+                }
+                PlanResultLabel.Text = GlobalVariables.FrequencyResult[(int)mPlanSlider.Value];
+                FrequencyResultLabel.Text = GlobalVariables.FrequencyResult[(int)mFrequencySlider.Value];
+                HealthResultLabel.Text = GlobalVariables.HealthResult[(int)mHealthSlider.Value];
                 Update();
             });
             
@@ -243,24 +298,24 @@ namespace SelfControl.Helpers.Pages
         {
             CustomSlider slider = (CustomSlider)sender;
             var newStep = Math.Round(e.NewValue / 1.0);
-
+            dirty = true;
             slider.Value = newStep * 1.0;
             string text = "";
             switch (slider.Value)
             {
-                case -2:
+                case 0:
                     text = GlobalVariables.FrequencyResult[0];
                     break;
-                case -1:
+                case 1:
                     text = GlobalVariables.FrequencyResult[1];
                     break;
-                case 0:
+                case 2:
                     text = GlobalVariables.FrequencyResult[2];
                     break;
-                case 1:
+                case 3:
                     text = GlobalVariables.FrequencyResult[3];
                     break;
-                case 2:
+                case 4:
                     text = GlobalVariables.FrequencyResult[4];
                     break;
                 default:
@@ -276,36 +331,73 @@ namespace SelfControl.Helpers.Pages
         {
             CustomSlider slider = (CustomSlider)sender;
             var newStep = Math.Round(e.NewValue / 1.0);
-
+            dirty = true;
             slider.Value = newStep * 1.0;
             string text = "";
             switch (slider.Value)
             {
-                case -3:
+                case 0:
                     text = GlobalVariables.HealthResult[0];
                     break;
-                case -2:
+                case 1:
                     text = GlobalVariables.HealthResult[1];
                     break;
-                case -1:
+                case 2:
                     text = GlobalVariables.HealthResult[2];
                     break;
-                case 0:
+                case 3:
                     text = GlobalVariables.HealthResult[3];
                     break;
-                case 1:
+                case 4:
                     text = GlobalVariables.HealthResult[4];
                     break;
-                case 2:
+                case 5:
                     text = GlobalVariables.HealthResult[5];
                     break;
-                case 3:
+                case 6:
                     text = GlobalVariables.HealthResult[6];
                     break;
                 default:
                     break;
             }
             HealthResultLabel.Text = text;
+        }
+
+        async private void OnDoneClicked(object sender, EventArgs e)
+        {
+            // TODO: Name cannot be null
+            if (food != null && dirty)
+            {
+                food.NAME = mName.Text;
+                food.FREQUENCY = (int)mFrequencySlider.Value;
+                food.PLAN = (int)mPlanSlider.Value;
+                food.HEALTH = (int)mHealthSlider.Value;
+                await cm.SaveItemAsync(food);
+                await Navigation.PopAsync();
+            }
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            Task.Run(async () =>
+            {
+                if (EntryType == GlobalVariables.EntryType.NEW_ENTRY)
+                {
+                    DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(food.PATH);
+                    await cm.DeleteItemAsync(food);
+                }
+            });
+            return base.OnBackButtonPressed();
+        }
+
+        async private void OnCancelClicked(object sender, EventArgs e)
+        {
+            if(EntryType == GlobalVariables.EntryType.NEW_ENTRY)
+            {
+                DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(food.PATH);
+                await cm.DeleteItemAsync(food);
+            }
+            await Navigation.PopAsync();
         }
     }
 }

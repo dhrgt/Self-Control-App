@@ -1,7 +1,10 @@
 ﻿using SelfControl.DatabaseManager;
+using SelfControl.Helpers;
+using SelfControl.Helpers.Pages;
 using SelfControl.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +19,6 @@ namespace SelfControl
 	{
         string mFoodName;
         string mFileName;
-        bool clicked;
         ConnectionManager cm;
         DateTime mDateTime;
         int mWidth, mHeight, mOrientation;
@@ -25,79 +27,67 @@ namespace SelfControl
 		{
             mFoodName = string.Empty;
             mFileName = string.Empty;
-            clicked = false;
             cm = new ConnectionManager(DependencyService.Get<SelfControl.Interfaces.IFileHelper>().GetLocalFilePath(SelfControl.Helpers.GlobalVariables.DATABASE_NAME));
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.Black;
             InitializeComponent ();
-            okButton.Clicked += OnAlertYesNoClicked;
         }
 
         public void PictureClickedHandler(string file, DateTime dateTime, int width, int height, int orientation)
         {
-            clicked = true;
-            EnteredName.Text = string.Empty;
-            overlay.IsVisible = true;
-            EnteredName.Focus();
             mFileName = file;
             mDateTime = dateTime;
             mWidth = width;
             mHeight = height;
             mOrientation = orientation;
+            InsertNewEntry();
         }
 
-        void OnOKButtonClicked(object sender, EventArgs args)
+        async private void CheckForStage2()
         {
-            overlay.IsVisible = false;
-            mFoodName = EnteredName.Text;
-            Console.WriteLine("Entered Name: " + mFoodName);
+            List<FoodItem> food = await cm.QueryByDateTime();
+            if (food.Count == GlobalVariables.SIZE_OF_FOOD_LIBRARY)
+                Helpers.Settings.StageSettings = GlobalVariables.STAGE_2;
         }
 
-        void OnCancelButtonClicked(object sender, EventArgs args)
+        async void InsertNewEntry()
         {
-            overlay.IsVisible = false;
-            clicked = false;
-            DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(mFileName);
-        }
-
-        async void OnAlertYesNoClicked(object sender, EventArgs e)
-        {
-            var answer = await DisplayAlert("", "Are you trying to eat/drink more " + mFoodName + "?", "Yes", "No");
-            Console.WriteLine("Answer: " + answer);
-            clicked = false;
             FoodItem item = new FoodItem();
-            if (mFoodName != string.Empty)
-            {
-                item.ID = 0;
-                item.DATE = mDateTime;
-                item.NAME = mFoodName;
-                item.PATH = mFileName;
-                item.HOTEFFECT = answer;
-                item.COOLEFFECT = !answer;
-                item.IMGWIDTH = mWidth;
-                item.IMGHEIGHT = mHeight;
-                item.IMGORIENTATION = mOrientation;
-            }
+            item.ID = 0;
+            item.DATE = mDateTime;
+            item.NAME = mFoodName;
+            item.PATH = mFileName;
+            item.HOTEFFECT = true;
+            item.COOLEFFECT = false;
+            item.IMGWIDTH = mWidth;
+            item.IMGHEIGHT = mHeight;
+            item.IMGORIENTATION = mOrientation;
+            item.HEALTH = -1;
+            item.FREQUENCY = -1;
+            item.PLAN = -1;
             if (cm != null)
             {
-                await cm.SaveItemAsync(item);
+                int i = await cm.SaveItemAsync(item);
+                if(i == 1)
+                {
+                    List<FoodItem> food = await cm.QueryIdByDate(mDateTime);
+                    int id = food.First().ID;
+                    var img = File.ReadAllBytes(mFileName);
+                    var aspectRatio = GlobalVariables.GetAspectRatio(mWidth, mHeight);
+                    byte[] thumbnail = null;
+                    if (aspectRatio == GlobalVariables.AspectRatio.SixteenByNine)
+                        thumbnail = DependencyService.Get<Interfaces.IResizeImage>().Resize(img, 640, 360);
+                    else
+                        thumbnail = DependencyService.Get<Interfaces.IResizeImage>().Resize(img, 640, 480);
+                    await Navigation.PushAsync(new EditDetailsPage(id, thumbnail, GlobalVariables.EntryType.NEW_ENTRY));
+                    if(Settings.StageSettings == GlobalVariables.STAGE_1)
+                        CheckForStage2();
+                }
             }
             else
             {
                 Console.WriteLine("Unable to store data, no cm found");
             }
-        }
-
-        protected override bool OnBackButtonPressed()
-        {
-            if (clicked)
-            {
-                overlay.IsVisible = false;
-                clicked = false;
-                DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(mFileName);
-                return true;
-            }
-            return base.OnBackButtonPressed();
         }
 
         public void NavigateBack()

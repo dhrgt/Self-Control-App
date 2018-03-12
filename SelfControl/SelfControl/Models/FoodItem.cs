@@ -10,23 +10,29 @@ namespace SelfControl.Models
     {
         static string DATETIME_COL = "_date";
         static string ID_COL = "_id";
-        static string name_col = "_name";
+        static string NAME_COL = "_name";
         static string PATH_COL = "_path";
         static string COOL_COL = "_coolEffect";
         static string HOT_COL = "_hotEffect";
         static string IMG_HEIGHT = "_height";
         static string IMG_WIDTH = "_width";
         static string IMG_ORIENTATION = "_orientation";
+        static string FREQUENCY_COL = "_frequency";
+        static string HEALTH_COL = "_health";
+        static string PLAN_COL = "_plan";
 
         public static string dateTimeCol { get => DATETIME_COL; }
         public static string idCol { get => ID_COL; }
-        public static string nameCol { get => name_col; }
+        public static string nameCol { get => NAME_COL; }
         public static string pathCol { get => PATH_COL; }
         public static string coolCol { get => COOL_COL; }
         public static string hotCol { get => HOT_COL; }
         public static string widthCol { get => IMG_WIDTH; }
         public static string hieghtCol { get => IMG_HEIGHT; }
         public static string orientationCol { get => IMG_ORIENTATION; }
+        public static string frequencyCol { get => FREQUENCY_COL; }
+        public static string healthCol { get => HEALTH_COL; }
+        public static string planCol { get => PLAN_COL; }
 
         [PrimaryKey, AutoIncrement, Column("_id")]
         public int ID { get; set; }
@@ -46,5 +52,11 @@ namespace SelfControl.Models
         public int IMGWIDTH { get; set; }
         [Column("_orientation")]
         public int IMGORIENTATION { get; set; }
+        [Column("_freqeuncy")]
+        public int FREQUENCY { get; set; }
+        [Column("_health")]
+        public int HEALTH { get; set; }
+        [Column("_plan")]
+        public int PLAN { get; set; }
     }
 }
