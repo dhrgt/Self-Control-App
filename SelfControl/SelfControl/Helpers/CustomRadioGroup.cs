@@ -18,11 +18,11 @@ namespace SelfControl.Helpers
 
 
         public static BindableProperty ItemsSourceProperty =
-            BindableProperty.Create("Items", typeof(IEnumerable<string>), typeof(CustomRadioButton), null, propertyChanged: (bindable, oldValue, newValue) =>
+            BindableProperty.Create("Items", typeof(IEnumerable<CustomRadioButton>), typeof(CustomRadioButton), null, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 CustomRadioGroup rg = (CustomRadioGroup)bindable;
-                rg.ItemsSource = (IEnumerable<string>)newValue;
-                OnItemsSourceChanged(bindable, (IEnumerable<string>)oldValue, (IEnumerable<string>)newValue);
+                rg.ItemsSource = (IEnumerable<CustomRadioButton>)newValue;
+                OnItemsSourceChanged(bindable, (IEnumerable<CustomRadioButton>)oldValue, (IEnumerable<CustomRadioButton>)newValue);
             });
 
 
@@ -34,9 +34,9 @@ namespace SelfControl.Helpers
                 OnSelectedIndexChanged(bindable, (int)oldValue, (int)newValue);
             });
 
-        public IEnumerable<string> ItemsSource
+        public IEnumerable<CustomRadioButton> ItemsSource
         {
-            get { return (IEnumerable<string>)GetValue(ItemsSourceProperty); }
+            get { return (IEnumerable<CustomRadioButton>)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 
@@ -49,7 +49,7 @@ namespace SelfControl.Helpers
 
         public event EventHandler<int> CheckedChanged;
 
-        private static void OnItemsSourceChanged(BindableObject bindable, IEnumerable<string> oldvalue, IEnumerable<string> newvalue)
+        private static void OnItemsSourceChanged(BindableObject bindable, IEnumerable<CustomRadioButton> oldvalue, IEnumerable<CustomRadioButton> newvalue)
         {
             var radButtons = bindable as CustomRadioGroup;
 
@@ -61,8 +61,7 @@ namespace SelfControl.Helpers
                 int radIndex = 0;
                 foreach (var item in newvalue)
                 {
-                    var rad = new CustomRadioButton();
-                    rad.Text = item.ToString();
+                    var rad = item;
                     rad.Id = radIndex;
 
                     rad.CheckedChanged += radButtons.OnCheckedChanged;
@@ -90,8 +89,7 @@ namespace SelfControl.Helpers
                 }
                 else
                 {
-                    if (CheckedChanged != null)
-                        CheckedChanged.Invoke(sender, rad.Id);
+                    SelectedIndex = rad.Id;
 
                 }
 

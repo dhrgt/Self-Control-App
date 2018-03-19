@@ -40,6 +40,7 @@ namespace SelfControl.Droid.Helpers
         private const int FLASH_AUTO = 2;
 
         private ImageView ImageDisplay;
+        private ImageView roi;
 
         public Activity Activity;
 
@@ -109,7 +110,8 @@ namespace SelfControl.Droid.Helpers
             mFlashButton.SetOnClickListener(this);
             view.FindViewById(Resource.Id.back_button).SetOnClickListener(this);
             ImageDisplay = view.FindViewById<ImageView>(Resource.Id.img_display);
-        
+            roi = view.FindViewById<ImageView>(Resource.Id.roiView);
+
             mCaptureCallback = new CameraCaptureListener(this);
             mOnImageAvailableListener = new ImageAvailableListener(this);
             flashMenuListner = new FlashMenuListener(this);
@@ -447,50 +449,23 @@ namespace SelfControl.Droid.Helpers
 
                 // This is the output Surface we need to start preview.
                 Surface surface = new Surface(texture);
-                aspectRatio = (float)(mPreviewSize.Height) / (float)(mPreviewSize.Width);
-                
-                Activity.RunOnUiThread(new Runnable(() => {
-                    Matrix affineMatrix = new Matrix();
-                    mTextureView.GetTransform(affineMatrix);
-                    affineMatrix.PostTranslate(-mTextureView.Width / 2, -mTextureView.Height / 2);
-                    affineMatrix.PostScale((float)SelfControl.Helpers.Settings.CameraScaleSettings, (float)SelfControl.Helpers.Settings.CameraScaleSettings);
-                    affineMatrix.PostTranslate(mTextureView.Width / 2, mTextureView.Height / 2);
-                    mTextureView.SetTransform(affineMatrix);
-                    ImageView roi = (ImageView)Activity.FindViewById(Resource.Id.roiView);
-                    roi.Left = mTextureView.Left;
-                    roi.Top = mTextureView.Top;
-                    roi.Right = mTextureView.Right;
-                    roi.Bottom = mTextureView.Bottom;
-                    int orientation = (int)Activity.Resources.Configuration.Orientation;
-                    Bitmap bitmap;
-                    aspectRatio = (float)(mPreviewSize.Height) / (float)(mPreviewSize.Width);
-                    roi.ScaleX = 1.0f;
-                    roi.ScaleY = (((mPreviewSize.Height * 1) / aspectRatio) / mPreviewSize.Width);
-                    bitmap = Bitmap.CreateBitmap(roi.Width, roi.Height, Bitmap.Config.Argb8888);
-                    Canvas canvas = new Canvas(bitmap);
-                    Paint paint = new Paint();
-                    paint.SetARGB(191, 0, 0, 0);
-                    /*float cellHeight = bitmap.Height / 7;
-                    float cellWidth = bitmap.Width / 7;
-                    canvas.DrawRect(0, 0, bitmap.Width, cellHeight, paint);
-                    canvas.DrawRect(0, cellHeight, cellWidth, bitmap.Height - cellHeight, paint);
-                    canvas.DrawRect(0, bitmap.Height - cellHeight, bitmap.Width, bitmap.Height, paint);
-                    canvas.DrawRect(bitmap.Width - cellWidth, cellHeight, bitmap.Width, bitmap.Height - cellHeight, paint);*/
-                    canvas.DrawRect(0, 0, bitmap.Width, bitmap.Height, paint);
 
-                    paint.Color = Color.Transparent; // An obvious color to help debugging
-                    paint.SetXfermode(new PorterDuffXfermode(PorterDuff.Mode.SrcOut));
-                    float centerX = bitmap.Width / 2;
-                    float centerY = bitmap.Height / 2;
-                    float radius = Math.Min(bitmap.Width, bitmap.Height) / 2 - Math.Min(bitmap.Width, bitmap.Height) / 5;
-                    mRadius = radius;
-                    canvas.DrawCircle(centerX, centerY, radius, paint);
-                    roi.SetImageBitmap(bitmap);
-                    roi.Invalidate();
+                Activity.RunOnUiThread(new Runnable(() =>
+                {
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    Activity.WindowManager.DefaultDisplay.GetMetrics(displayMetrics);
+                    int height = displayMetrics.HeightPixels;
+                    int width = displayMetrics.WidthPixels;
+                    roi.Left = 0;
+                    roi.Top = 0;
+                    roi.Right = width;
+                    roi.Bottom = height;
                 }));
+                ChangeScale();
+                ChangeRoi();
 
-            // We set up a CaptureRequest.Builder with the output Surface.
-            mPreviewRequestBuilder = mCameraDevice.CreateCaptureRequest(CameraTemplate.Preview);
+                // We set up a CaptureRequest.Builder with the output Surface.
+                mPreviewRequestBuilder = mCameraDevice.CreateCaptureRequest(CameraTemplate.Preview);
                 mPreviewRequestBuilder.AddTarget(surface);
 
                 // Here, we create a CameraCaptureSession for camera preview.
@@ -698,6 +673,47 @@ namespace SelfControl.Droid.Helpers
                     mCPR.NavigateToGallery();
                     break;
             }
+        }
+
+        public void ChangeScale()
+        {
+            Activity.RunOnUiThread(new Runnable(() =>
+            {
+                Matrix affineMatrix = new Matrix();
+                mTextureView.GetTransform(affineMatrix);
+                affineMatrix.Reset();
+                affineMatrix.PostTranslate(-mTextureView.Width / 2, -mTextureView.Height / 2);
+                affineMatrix.PostScale((float)SelfControl.Helpers.Settings.CameraScaleSettings, (float)SelfControl.Helpers.Settings.CameraScaleSettings);
+                affineMatrix.PostTranslate(mTextureView.Width / 2, mTextureView.Height / 2);
+                mTextureView.SetTransform(affineMatrix);
+                mTextureView.Invalidate();
+            }));
+        }
+
+        public void ChangeRoi()
+        {
+            Activity.RunOnUiThread(new Runnable(() =>
+            {
+                Bitmap bitmap;
+                aspectRatio = (float)(mPreviewSize.Height) / (float)(mPreviewSize.Width);
+                roi.ScaleX = 1.0f;
+                roi.ScaleY = ((mPreviewSize.Height / aspectRatio) / mPreviewSize.Width);
+                bitmap = Bitmap.CreateBitmap(roi.Width, roi.Height, Bitmap.Config.Argb8888);
+                Canvas canvas = new Canvas(bitmap);
+                Paint paint = new Paint();
+                paint.SetARGB(191, 0, 0, 0);
+                canvas.DrawRect(0, 0, bitmap.Width, bitmap.Height, paint);
+
+                paint.Color = Android.Graphics.Color.Transparent; // An obvious color to help debugging
+                paint.SetXfermode(new PorterDuffXfermode(PorterDuff.Mode.SrcOut));
+                float centerX = bitmap.Width / 2;
+                float centerY = bitmap.Height / 2;
+                float radius = Math.Min(bitmap.Width, bitmap.Height) / 2 - Math.Min(bitmap.Width, bitmap.Height) / (float)SelfControl.Helpers.Settings.CameraRoiValue;
+                mRadius = radius;
+                canvas.DrawCircle(centerX, centerY, radius, paint);
+                roi.SetImageBitmap(bitmap);
+                roi.Invalidate();
+            }));
         }
     }
 }

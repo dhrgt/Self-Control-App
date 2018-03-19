@@ -31,7 +31,7 @@ namespace SelfControl.DatabaseManager
                 return database.InsertAsync(item);
             }
         }
-
+        
         public Task<int> DeleteItemAsync(FoodItem item)
         {
             return database.DeleteAsync(item);

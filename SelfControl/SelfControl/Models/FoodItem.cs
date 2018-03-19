@@ -17,9 +17,7 @@ namespace SelfControl.Models
         static string IMG_HEIGHT = "_height";
         static string IMG_WIDTH = "_width";
         static string IMG_ORIENTATION = "_orientation";
-        static string FREQUENCY_COL = "_frequency";
-        static string HEALTH_COL = "_health";
-        static string PLAN_COL = "_plan";
+        static string ANSWERS_COL = "_answers";
 
         public static string dateTimeCol { get => DATETIME_COL; }
         public static string idCol { get => ID_COL; }
@@ -30,9 +28,7 @@ namespace SelfControl.Models
         public static string widthCol { get => IMG_WIDTH; }
         public static string hieghtCol { get => IMG_HEIGHT; }
         public static string orientationCol { get => IMG_ORIENTATION; }
-        public static string frequencyCol { get => FREQUENCY_COL; }
-        public static string healthCol { get => HEALTH_COL; }
-        public static string planCol { get => PLAN_COL; }
+        public static string answersCol { get => ANSWERS_COL; }
 
         [PrimaryKey, AutoIncrement, Column("_id")]
         public int ID { get; set; }
@@ -52,11 +48,7 @@ namespace SelfControl.Models
         public int IMGWIDTH { get; set; }
         [Column("_orientation")]
         public int IMGORIENTATION { get; set; }
-        [Column("_freqeuncy")]
-        public int FREQUENCY { get; set; }
-        [Column("_health")]
-        public int HEALTH { get; set; }
-        [Column("_plan")]
-        public int PLAN { get; set; }
+        [Column("_answers")]
+        public string ANSWERS { get; set; }
     }
 }

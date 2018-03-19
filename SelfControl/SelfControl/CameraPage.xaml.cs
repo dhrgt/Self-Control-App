@@ -62,9 +62,12 @@ namespace SelfControl
             item.IMGWIDTH = mWidth;
             item.IMGHEIGHT = mHeight;
             item.IMGORIENTATION = mOrientation;
-            item.HEALTH = -1;
-            item.FREQUENCY = -1;
-            item.PLAN = -1;
+            Dictionary<int, int> answers = new Dictionary<int, int>();
+            foreach(var questions in GlobalVariables.Questions)
+            {
+                answers.Add(questions.Key, -1);
+            }
+            item.ANSWERS = GlobalVariables.SerializeDictionary(answers);
             if (cm != null)
             {
                 int i = await cm.SaveItemAsync(item);

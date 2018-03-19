@@ -46,7 +46,7 @@ namespace SelfControl.Droid.Helpers
             }
             else
             {
-                if (width < (float)height * mRatioWidth / (float)mRatioHeight)
+                if (width > (float)height * mRatioWidth / (float)mRatioHeight)
                 {
                     SetMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
                 }

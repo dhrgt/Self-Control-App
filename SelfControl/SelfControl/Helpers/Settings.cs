@@ -21,6 +21,9 @@ namespace SelfControl.Helpers
         private const string CameraScaleSetting = "camera_scale";
         private static readonly double CameraScaleSettingDefault = GlobalVariables.CAMERA_PREVIEW_SCALE;
 
+        private const string CameraRoiValueKey = "camera_roi_value_key";
+        private static readonly double CameraRoiValueDefault = GlobalVariables.CAMERA_ROI_SIZE;
+
         #endregion
 
 
@@ -45,6 +48,18 @@ namespace SelfControl.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(CameraScaleSetting, value);
+            }
+        }
+
+        public static double CameraRoiValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(CameraRoiValueKey, CameraRoiValueDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(CameraRoiValueKey, value);
             }
         }
     }

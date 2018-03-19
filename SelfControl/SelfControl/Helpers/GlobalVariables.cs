@@ -13,7 +13,7 @@ namespace SelfControl.Helpers
 
         public const double CAMERA_PREVIEW_SCALE = 1.0;
 
-        public const string IMAGE_PAGE_QUESTION = "Do you want to eat more of this?";
+        public const double CAMERA_ROI_SIZE = 5.0;
 
         public const string DATABASE_NAME = "foodDB.db3";
 
@@ -22,6 +22,13 @@ namespace SelfControl.Helpers
             FourByThree = 1,
             SixteenByNine = 2
         }
+
+        public static Dictionary<int, string> Questions = new Dictionary<int, string>()
+        {
+            { 0, "How frequently do you eat this?" },
+            { 1, "How much do you plan to eat this in the future?" },
+            { 2, "How healthy do you think this food is?" }
+        };
 
         public static string[] FrequencyResult =
         {
@@ -57,6 +64,36 @@ namespace SelfControl.Helpers
                 return AspectRatio.SixteenByNine;
             }
             return AspectRatio.FourByThree;
+        }
+
+        public static string SerializeDictionary<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var pair in dictionary)
+            {
+                builder.Append(pair.Key).Append(":").Append(pair.Value).Append(',');
+            }
+            string result = builder.ToString();
+            result = result.TrimEnd(',');
+            return result;
+        }
+
+        public static Dictionary<int, int> DeserializeDictionary(string s)
+        {
+            Dictionary<int, int> d = new Dictionary<int, int>();
+            string[] tokens = s.Split(new char[] { ':', ',' },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < tokens.Length; i += 2)
+            {
+                string name = tokens[i];
+                string freq = tokens[i + 1];
+                
+                int count = int.Parse(freq);
+                int key = int.Parse(name);
+                d.Add(key, count);
+            }
+            return d;
         }
     }
 }
