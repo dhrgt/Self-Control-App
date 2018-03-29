@@ -22,6 +22,7 @@ using SelfControl.Droid.Helpers.Listeners;
 using SelfControl.Droid.Renderers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Boolean = Java.Lang.Boolean;
 using Math = Java.Lang.Math;
 using Orientation = Android.Content.Res.Orientation;
@@ -73,7 +74,7 @@ namespace SelfControl.Droid.Helpers
         public Handler mBackgroundHandler;
 
         private ImageReader mImageReader;
-        public File mFile;
+        public Java.IO.File mFile;
         private ImageAvailableListener mOnImageAvailableListener;
         public CaptureRequest.Builder mPreviewRequestBuilder;
         public CaptureRequest mPreviewRequest;
@@ -608,8 +609,21 @@ namespace SelfControl.Droid.Helpers
 
         void AfterPicture()
         {
-            int rotation = GetOrientation((int)Activity.WindowManager.DefaultDisplay.Rotation);
-            mCPR.NavigateImageQuestionPage(mFile.AbsolutePath.ToString(), mCaptureTime, mOnImageAvailableListener.imgWidth, mOnImageAvailableListener.imgHeight, rotation);
+            Bitmap rotatedBitmap = null;
+            rotatedBitmap = GlobalHelpers.LoadBitmap(Activity, mFile.AbsolutePath);
+            byte[] bytes = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                rotatedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 90, ms);
+                rotatedBitmap.Recycle();
+                ResizeImageAndroid resizeImage = new ResizeImageAndroid();
+                var aspectRatio = SelfControl.Helpers.GlobalVariables.GetAspectRatio(rotatedBitmap.Width, rotatedBitmap.Height);
+                if (aspectRatio == SelfControl.Helpers.GlobalVariables.AspectRatio.SixteenByNine)
+                    bytes = resizeImage.Resize(ms.ToArray(), 612, 1088);
+                else
+                    bytes = resizeImage.Resize(ms.ToArray(), 816, 1088);
+            }
+            mCPR.NavigateImageQuestionPage(mFile.AbsolutePath.ToString(), mCaptureTime, mOnImageAvailableListener.imgWidth, mOnImageAvailableListener.imgHeight, bytes);
         }
         
         public void UnlockFocus()
@@ -654,7 +668,7 @@ namespace SelfControl.Droid.Helpers
             {
                 case Resource.Id.snap_button:
                     string fileName = GetDateTime();
-                    mFile = new File(Activity.GetExternalFilesDir(null), fileName);
+                    mFile = new Java.IO.File(Activity.GetExternalFilesDir(null), fileName);
                     TakePicture();
                     break;
                 case Resource.Id.flash_button:

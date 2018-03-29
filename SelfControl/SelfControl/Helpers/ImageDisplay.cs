@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FFImageLoading.Forms;
+using SelfControl.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -21,12 +23,17 @@ namespace SelfControl.Helpers
         });
 
         public static readonly BindableProperty ImageIdProperty =
-        BindableProperty.Create("ID", typeof(int), typeof(ImageDisplay), -1, propertyChanged: (bindable, oldValue, newValue) =>
+        BindableProperty.Create("DataBaseItem", typeof(FoodItem), typeof(ImageDisplay), null, propertyChanged: (bindable, oldValue, newValue) =>
         {
         });
 
         public static readonly BindableProperty IsSelectedProperty =
         BindableProperty.Create("IsSelected", typeof(bool), typeof(ImageDisplay), false, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+        });
+
+        public static readonly BindableProperty ParentPageProperty =
+        BindableProperty.Create("ParentPage", typeof(GalleryPage), typeof(ImageDisplay), null, propertyChanged: (bindable, oldValue, newValue) =>
         {
         });
 
@@ -60,10 +67,16 @@ namespace SelfControl.Helpers
             set { SetValue(IsSelectedProperty, value); }
         }
 
-        public int ID
+        public FoodItem DatabaseItem
         {
-            get { return (int)GetValue(ImageIdProperty); }
+            get { return (FoodItem)GetValue(ImageIdProperty); }
             set { SetValue(ImageIdProperty, value); }
+        }
+
+        public GalleryPage ParentPage
+        {
+            get { return (GalleryPage)GetValue(ParentPageProperty); }
+            set { SetValue(ParentPageProperty, value); }
         }
     }
 }

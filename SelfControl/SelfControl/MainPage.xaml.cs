@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SelfControl.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace SelfControl
 		{
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.White;
+            GlobalVariables.UpdateDateDiary();
             InitializeComponent();
 
             var title = new Label

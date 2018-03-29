@@ -16,7 +16,7 @@ namespace SelfControl.Models
         static string HOT_COL = "_hotEffect";
         static string IMG_HEIGHT = "_height";
         static string IMG_WIDTH = "_width";
-        static string IMG_ORIENTATION = "_orientation";
+        static string IMG_BYTES = "_imgBytes";
         static string ANSWERS_COL = "_answers";
 
         public static string dateTimeCol { get => DATETIME_COL; }
@@ -27,7 +27,7 @@ namespace SelfControl.Models
         public static string hotCol { get => HOT_COL; }
         public static string widthCol { get => IMG_WIDTH; }
         public static string hieghtCol { get => IMG_HEIGHT; }
-        public static string orientationCol { get => IMG_ORIENTATION; }
+        public static string imgBytesCol { get => IMG_BYTES; }
         public static string answersCol { get => ANSWERS_COL; }
 
         [PrimaryKey, AutoIncrement, Column("_id")]
@@ -46,8 +46,8 @@ namespace SelfControl.Models
         public int IMGHEIGHT { get; set; }
         [Column("_width")]
         public int IMGWIDTH { get; set; }
-        [Column("_orientation")]
-        public int IMGORIENTATION { get; set; }
+        [Column("_imgBytes")]
+        public string IMGBYTES { get; set; }
         [Column("_answers")]
         public string ANSWERS { get; set; }
     }

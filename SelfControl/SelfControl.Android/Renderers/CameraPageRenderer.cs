@@ -59,9 +59,9 @@ namespace SelfControl.Droid.Renderers
             mView.Layout(0, 0, r - l, b - t);
         }
 
-        public void NavigateImageQuestionPage(String file, DateTime dateTime, int width, int height, int rotation)
+        public void NavigateImageQuestionPage(String file, DateTime dateTime, int width, int height, byte[] imgBytes)
         {
-            ((SelfControl.CameraPage)Element).PictureClickedHandler(file, dateTime, width, height, rotation);
+            ((SelfControl.CameraPage)Element).PictureClickedHandler(file, dateTime, width, height, imgBytes);
         }
 
         public void NavigateToGallery()

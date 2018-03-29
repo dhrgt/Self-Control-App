@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SelfControl.DatabaseManager
 {
-    class ConnectionManager
+    public class ConnectionManager
     {
         readonly SQLiteAsyncConnection database;
 

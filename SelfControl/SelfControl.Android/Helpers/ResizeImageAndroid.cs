@@ -26,6 +26,8 @@ namespace SelfControl.Droid.Helpers
             using (MemoryStream ms = new MemoryStream())
             {
                 resizedImage.Compress(Bitmap.CompressFormat.Jpeg, 90, ms);
+                resizedImage.Recycle();
+                originalImage.Recycle();
                 return ms.ToArray();
             }
         }

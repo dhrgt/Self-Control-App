@@ -2,6 +2,7 @@
 using SelfControl.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace SelfControl.Helpers.Pages
         
         Entry mName;
         Dictionary<int, CustomRadioGroup> radioGroups;
-
+        Image imageView;
         GlobalVariables.EntryType EntryType;
 
         RelativeLayout view;
@@ -26,7 +27,7 @@ namespace SelfControl.Helpers.Pages
         ConnectionManager cm;
         FoodItem food;
 
-        public EditDetailsPage (int id, byte[] image, GlobalVariables.EntryType e)
+        public EditDetailsPage (int id, GlobalVariables.EntryType e)
 		{
             cm = new ConnectionManager(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(SelfControl.Helpers.GlobalVariables.DATABASE_NAME));
 			InitializeComponent ();
@@ -82,17 +83,17 @@ namespace SelfControl.Helpers.Pages
             }
             
             view = new RelativeLayout();
-            ImageDisplay imageView = new ImageDisplay
+            imageView = new Image
             {
                 WidthRequest = 100,
                 HeightRequest = 100,
-                ImageByte = image
+                Aspect = Aspect.AspectFill
             };
             
             view.Children.Add(imageView,
                 Constraint.RelativeToParent((parent) => 
                 {
-                    return parent.X + 20;
+                    return parent.X + 10;
                 }),
                 Constraint.RelativeToParent((parent) =>
                 {
@@ -104,7 +105,7 @@ namespace SelfControl.Helpers.Pages
             view.Children.Add(nameLabel, Constraint.RelativeToView(imageView, 
                 (Parent, sibling) => 
                 {
-                    return sibling.Width + 30;
+                    return sibling.Width + 40;
                 }), 
                 Constraint.RelativeToView(imageView,
                 (Parent, sibling) =>
@@ -203,6 +204,7 @@ namespace SelfControl.Helpers.Pages
                 List<FoodItem> f = await cm.QueryById(mID);
                 food = f.First();
                 dict = GlobalVariables.DeserializeDictionary(food.ANSWERS);
+                imageView.Source = ImageSource.FromStream(() => new MemoryStream(GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES)));
                 if (EntryType == GlobalVariables.EntryType.UPDATE_ENTRY)
                 {
                     mName.Text = food.NAME;
@@ -219,10 +221,25 @@ namespace SelfControl.Helpers.Pages
             });
         }
 
+        
+
         async private void OnDoneClicked(object sender, EventArgs e)
         {
-            // TODO: Name cannot be null
-            if (food != null)
+            bool radsFilled = true;
+            foreach (var rads in radioGroups)
+            {
+                if(rads.Value.SelectedIndex == -1)
+                {
+                    radsFilled = false;
+                    break;
+                }
+            }
+            if (mName.Text == string.Empty || !radsFilled)
+            {
+                await DisplayAlert("Alert", "Please fill all the fields", "OK");
+                return;
+            }
+            else if (food != null)
             {
                 food.NAME = mName.Text;
                 foreach (var rads in radioGroups)
@@ -231,6 +248,7 @@ namespace SelfControl.Helpers.Pages
                 }
                 food.ANSWERS = GlobalVariables.SerializeDictionary(dict);
                 await cm.SaveItemAsync(food);
+                await Task.Run(() => { GlobalVariables.UpdateDateDiary(food.ID); });
                 await Navigation.PopAsync();
             }
         }

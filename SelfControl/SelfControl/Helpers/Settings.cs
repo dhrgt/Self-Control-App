@@ -24,6 +24,9 @@ namespace SelfControl.Helpers
         private const string CameraRoiValueKey = "camera_roi_value_key";
         private static readonly double CameraRoiValueDefault = GlobalVariables.CAMERA_ROI_SIZE;
 
+        private const string RandomCriteriaSetting = "random_criteria_setting";
+        private static readonly int RandomCriteriaSettingDefault = (int)GlobalVariables.RandomCriteria.Random;
+
         #endregion
 
 
@@ -60,6 +63,18 @@ namespace SelfControl.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(CameraRoiValueKey, value);
+            }
+        }
+
+        public static int RandomCriteriaValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(RandomCriteriaSetting, RandomCriteriaSettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(RandomCriteriaSetting, value);
             }
         }
     }

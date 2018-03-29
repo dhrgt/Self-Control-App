@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using FFImageLoading.Forms;
 using SelfControl.Droid.Helpers;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
@@ -18,18 +20,65 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(SelfControl.Helpers.ImageDisplay), typeof(SelfControl.Droid.Renderers.ImageDisplayRenderer))]
 namespace SelfControl.Droid.Renderers
 {
-    class ImageDisplayRenderer : ImageRenderer
+    class ImageDisplayRenderer : ImageRenderer, Android.Views.View.IOnLongClickListener, Android.Views.View.IOnClickListener
     {
         Activity mActivity;
         Bitmap rotatedBitmap;
         public ImageDisplayRenderer(Context context) : base(context)
         {
-            
         }
 
-        protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.Image> e)
+        public void OnClick(Android.Views.View v)
+        {
+            var image = (SelfControl.Helpers.ImageDisplay)Element;
+            if (image.ParentPage.mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Selection)
+            {
+                image.IsSelected = !image.IsSelected;
+                if (image.IsSelected)
+                {
+                    image.ParentPage.selectedItems.Add(image);
+                    image.ParentPage.UpdateTitle();
+                }
+                else
+                {
+                    image.ParentPage.selectedItems.Remove(image);
+                    image.ParentPage.UpdateTitle();
+                }
+            }
+            else
+            {
+                image.ParentPage.NagivateImageViewer(image.DatabaseItem);
+            }
+        }
+
+        public bool OnLongClick(Android.Views.View v)
+        {
+            Console.WriteLine("LongClick");
+            var image = (SelfControl.Helpers.ImageDisplay)Element;
+            if (image.ParentPage.mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Normal)
+            {
+                image.ParentPage.mode = SelfControl.Helpers.GlobalVariables.GalleryMode.Selection;
+                image.ParentPage.MakeOptionsVisible();
+            }
+            image.IsSelected = !image.IsSelected;
+            if (image.IsSelected)
+            {
+                image.ParentPage.selectedItems.Add(image);
+                image.ParentPage.UpdateTitle();
+            }
+            else
+            {
+                image.ParentPage.selectedItems.Remove(image);
+                image.ParentPage.UpdateTitle();
+            }
+            return true;
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
         {
             base.OnElementChanged(e);
+            Control.SetOnLongClickListener(this);
+            Control.SetOnClickListener(this);
             Control.Invalidate();
         }
         
@@ -48,18 +97,13 @@ namespace SelfControl.Droid.Renderers
                 {
                     rotatedBitmap = null;
                     rotatedBitmap = GlobalHelpers.LoadBitmap(mActivity, file);
-                    Control.SetImageBitmap(rotatedBitmap);
                 }
                 else if(bytes != null)
                 {
                     rotatedBitmap = null;
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.InMutable = true;
-                    Bitmap img = BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length, options);
-                    Matrix matrix = new Matrix();
-                    matrix.PostRotate(90, img.Width / 2, img.Height / 2);
-                    rotatedBitmap = Bitmap.CreateBitmap(img, 0, 0, img.Width, img.Height, matrix, true);
-                    img.Recycle();
+                    rotatedBitmap = BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length, options);
                     Control.SetImageBitmap(rotatedBitmap);
                 }
                 if(rotatedBitmap != null && IsSelected)
@@ -70,9 +114,7 @@ namespace SelfControl.Droid.Renderers
                     paint.SetStyle(Paint.Style.Fill);
                     paint.StrokeWidth = 2;
                     canvas.DrawRect(0, 0, rotatedBitmap.Width, rotatedBitmap.Height, paint);
-                    Control.SetImageBitmap(rotatedBitmap);
                 }
-                //Control.Invalidate();
             }
         }
     }

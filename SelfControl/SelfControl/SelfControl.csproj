@@ -4,18 +4,38 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;RANDOM;</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Media\trash_button.png" />
+    <None Remove="Resources\bin_icon.png" />
+    <None Remove="Resources\blank.jpg" />
+    <None Remove="Resources\fire_button.png" />
+    <None Remove="Resources\frequency_icon.png" />
+    <None Remove="Resources\health_icon.png" />
+    <None Remove="Resources\heart_icon.png" />
+    <None Remove="Resources\ice_button.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Media\trash_button.png" />
+    <EmbeddedResource Include="Resources\bin_icon.png" />
+    <EmbeddedResource Include="Resources\blank.jpg" />
+    <EmbeddedResource Include="Resources\fire_button.png" />
+    <EmbeddedResource Include="Resources\health_icon.png" />
+    <EmbeddedResource Include="Resources\frequency_icon.png" />
+    <EmbeddedResource Include="Resources\heart_icon.png" />
+    <EmbeddedResource Include="Resources\ice_button.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CardsView" Version="1.3.5" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
+    <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.3.5" />
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.3.5" />
     <PackageReference Include="Xamarin.Forms" Version="2.5.0.122203" />
   </ItemGroup>
 
@@ -36,6 +56,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Helpers\Pages\EditDetailsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Helpers\Pages\ImageViewer.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="PlanPage.xaml">

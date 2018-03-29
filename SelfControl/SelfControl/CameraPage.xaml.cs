@@ -19,33 +19,32 @@ namespace SelfControl
 	{
         string mFoodName;
         string mFileName;
-        ConnectionManager cm;
         DateTime mDateTime;
-        int mWidth, mHeight, mOrientation;
+        int mWidth, mHeight;
+        byte[] mImageBytes;
 
         public CameraPage ()
 		{
             mFoodName = string.Empty;
             mFileName = string.Empty;
-            cm = new ConnectionManager(DependencyService.Get<SelfControl.Interfaces.IFileHelper>().GetLocalFilePath(SelfControl.Helpers.GlobalVariables.DATABASE_NAME));
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.Black;
             InitializeComponent ();
         }
 
-        public void PictureClickedHandler(string file, DateTime dateTime, int width, int height, int orientation)
+        public void PictureClickedHandler(string file, DateTime dateTime, int width, int height, byte[] imageBytes)
         {
             mFileName = file;
             mDateTime = dateTime;
             mWidth = width;
             mHeight = height;
-            mOrientation = orientation;
+            mImageBytes = imageBytes;
             InsertNewEntry();
         }
 
         async private void CheckForStage2()
         {
-            List<FoodItem> food = await cm.QueryByDateTime();
+            List<FoodItem> food = await GlobalVariables.cm.QueryByDateTime();
             if (food.Count == GlobalVariables.SIZE_OF_FOOD_LIBRARY)
                 Helpers.Settings.StageSettings = GlobalVariables.STAGE_2;
         }
@@ -61,28 +60,21 @@ namespace SelfControl
             item.COOLEFFECT = false;
             item.IMGWIDTH = mWidth;
             item.IMGHEIGHT = mHeight;
-            item.IMGORIENTATION = mOrientation;
+            item.IMGBYTES = GlobalVariables.SerializeByteArrayToString(mImageBytes);
             Dictionary<int, int> answers = new Dictionary<int, int>();
             foreach(var questions in GlobalVariables.Questions)
             {
                 answers.Add(questions.Key, -1);
             }
             item.ANSWERS = GlobalVariables.SerializeDictionary(answers);
-            if (cm != null)
+            if (GlobalVariables.cm != null)
             {
-                int i = await cm.SaveItemAsync(item);
+                int i = await GlobalVariables.cm.SaveItemAsync(item);
                 if(i == 1)
                 {
-                    List<FoodItem> food = await cm.QueryIdByDate(mDateTime);
+                    List<FoodItem> food = await GlobalVariables.cm.QueryIdByDate(mDateTime);
                     int id = food.First().ID;
-                    var img = File.ReadAllBytes(mFileName);
-                    var aspectRatio = GlobalVariables.GetAspectRatio(mWidth, mHeight);
-                    byte[] thumbnail = null;
-                    if (aspectRatio == GlobalVariables.AspectRatio.SixteenByNine)
-                        thumbnail = DependencyService.Get<Interfaces.IResizeImage>().Resize(img, 640, 360);
-                    else
-                        thumbnail = DependencyService.Get<Interfaces.IResizeImage>().Resize(img, 640, 480);
-                    await Navigation.PushAsync(new EditDetailsPage(id, thumbnail, GlobalVariables.EntryType.NEW_ENTRY));
+                    await Navigation.PushAsync(new EditDetailsPage(id, GlobalVariables.EntryType.NEW_ENTRY));
                     if(Settings.StageSettings == GlobalVariables.STAGE_1)
                         CheckForStage2();
                 }

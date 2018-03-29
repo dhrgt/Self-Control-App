@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Xamarin.Forms;
+using FFImageLoading.Forms.Droid;
 
 namespace SelfControl.Droid
 {
@@ -19,6 +21,8 @@ namespace SelfControl.Droid
 
             base.OnCreate(bundle);
 
+            Forms.SetFlags("FastRenderers_Experimental");
+            CachedImageRenderer.Init(true);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
             App.ScreenWidth = (int)(Resources.DisplayMetrics.WidthPixels / Resources.DisplayMetrics.Density);
