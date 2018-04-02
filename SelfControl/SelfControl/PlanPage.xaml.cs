@@ -3,7 +3,9 @@ using SelfControl.Helpers.Pages;
 using SelfControl.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +38,9 @@ namespace SelfControl
 
         List<FoodItem> ChosenItems;
         PracticeViewer practiceViewer;
+        public Image yesIcon;
+        public Image noIcon;
+
         public PlanPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
@@ -113,9 +118,60 @@ namespace SelfControl
                 }
             }
 #endif
-
+            Assembly assembly = typeof(PlanPage).GetTypeInfo().Assembly;
             practiceViewer = new PracticeViewer(ChosenItems);
             this.SetBinding(PlanPage.CurrentIndexProperty, nameof(PracticeViewerModel.CurrentIndex));
+
+            yesIcon = new Image
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60
+            };
+            var heartStream = assembly.GetManifestResourceStream("SelfControl.Resources.heart_icon.png");
+            var heartByte = new byte[heartStream.Length];
+            heartStream.Read(heartByte, 0, System.Convert.ToInt32(heartStream.Length));
+            yesIcon.Source = ImageSource.FromStream(() => new MemoryStream(heartByte));
+            TapGestureRecognizer yesTapped = new TapGestureRecognizer();
+            yesTapped.CommandParameter = false;
+            yesTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            yesIcon.GestureRecognizers.Add(yesTapped);
+
+            noIcon = new Image
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60
+            };
+            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
+            var cancelByte = new byte[cancelStream.Length];
+            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
+            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
+            TapGestureRecognizer noTapped = new TapGestureRecognizer();
+            noTapped.CommandParameter = true;
+            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            noIcon.GestureRecognizers.Add(noTapped);
+
+            AbsoluteLayout absoluteLayout = new AbsoluteLayout
+            {
+                Margin = 10,
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+            };
+            AbsoluteLayout.SetLayoutFlags(absoluteLayout, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(absoluteLayout, new Rectangle(1, 1, 1, 0.1));
+            StackLayout grid = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal
+            };
+            grid.Children.Add(yesIcon);
+            grid.Children.Add(noIcon);
+            AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));
+            absoluteLayout.Children.Add(grid);
+            practiceViewer.carouselView.Children.Add(absoluteLayout);
             Content = practiceViewer.carouselView;
             BindingContext = new PracticeViewerModel(practiceViewer.list, 0);
         }

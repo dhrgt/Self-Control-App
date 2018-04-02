@@ -13,7 +13,7 @@ namespace SelfControl.Helpers
         BindableProperty.Create("OnClick", typeof(ICommand), typeof(CustomPracticeButtons), null);
 
         public static readonly BindableProperty OnTouchProperty =
-        BindableProperty.Create("OnTouch", typeof(PracticeFactory), typeof(CustomPracticeButtons), null);
+        BindableProperty.Create("OnTouch", typeof(ICommand), typeof(CustomPracticeButtons), null);
 
         public static readonly BindableProperty IconBytesProperty =
         BindableProperty.Create("IconBytes", typeof(byte[]), typeof(CustomPracticeButtons), null, propertyChanged: (bindable, oldValue, newValue) =>
@@ -32,9 +32,9 @@ namespace SelfControl.Helpers
             set { SetValue(OnClickProperty, value); }
         }
 
-        public PracticeFactory OnTouch
+        public ICommand OnTouch
         {
-            get { return (PracticeFactory)GetValue(OnTouchProperty); }
+            get { return (ICommand)GetValue(OnTouchProperty); }
             set { SetValue(OnTouchProperty, value); }
         }
     }

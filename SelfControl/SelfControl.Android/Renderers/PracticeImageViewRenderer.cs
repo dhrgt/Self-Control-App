@@ -24,15 +24,26 @@ namespace SelfControl.Droid.Renderers
     {
         Drawable mImage;
         ColorMatrix matrix;
-
+        float saturation;
+        bool isHeating;
+        bool isCooling;
+        ValueAnimator animation;
         public PracticeImageViewRenderer(Context context) : base(context)
         {
+            Console.WriteLine("new PracticeImageRenderer created" + System.Environment.NewLine);
             matrix = new ColorMatrix();
+            saturation = 1f;
+            isHeating = false;
+            isCooling = false;
+            animation = null;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
         {
+            Console.WriteLine("OnElementChanged" + System.Environment.NewLine);
             base.OnElementChanged(e);
+            var image = (SelfControl.Helpers.PracticeImageView)Element;
+            image.SaturationChanged += this.OnElementPropertyChanged;
             Control.Invalidate();
         }
 
@@ -40,16 +51,32 @@ namespace SelfControl.Droid.Renderers
         {
             if(mImage != null)
             {
-                ValueAnimator animation = ValueAnimator.OfFloat(0f, 1f);
-                animation.SetDuration(5000);
+                animation = ValueAnimator.OfFloat(saturation, 2f);
+                animation.SetDuration(10000);
                 animation.AddUpdateListener(this);
                 animation.Start();
+                isHeating = true;
+                isCooling = false;
+            }
+        }
+
+        public void DecreaseSaturation()
+        {
+            if (mImage != null)
+            {
+                animation = ValueAnimator.OfFloat(saturation, 0f);
+                animation.SetDuration(10000);
+                animation.AddUpdateListener(this);
+                animation.Start();
+                isCooling = true;
+                isHeating = false;
             }
         }
 
         public void OnAnimationUpdate(ValueAnimator animation)
         {
-            matrix.SetSaturation(animation.AnimatedFraction);
+            matrix.SetSaturation((float)animation.AnimatedValue);
+            saturation = (float)animation.AnimatedValue;
             ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
             mImage.SetColorFilter(filter);
             Control.SetImageDrawable(mImage);
@@ -57,9 +84,10 @@ namespace SelfControl.Droid.Renderers
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            Console.WriteLine("OnElementPropertyChanged : " + e.PropertyName + System.Environment.NewLine);
             base.OnElementPropertyChanged(sender, e);
             Activity mActivity = Context as Activity;
-            var image = (SelfControl.Helpers.PracticeImageView)Element;
+            var image = (SelfControl.Helpers.PracticeImageView)sender;
             var bytes = image.ImageByte;
             var increaseSaturation = image.IncreaseSaturation;
 
@@ -72,8 +100,41 @@ namespace SelfControl.Droid.Renderers
                     Control.SetImageDrawable(mImage);
                 }
             }
-
-            if (increaseSaturation > 0) IncreaseSaturation();
+            if (increaseSaturation > 0 && !isHeating)
+            {
+                Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
+                if (isCooling && animation != null)
+                {
+                    animation = null;
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    mImage.SetColorFilter(filter);
+                    Control.SetImageDrawable(mImage);
+                }
+                IncreaseSaturation();
+            }
+            else if (increaseSaturation < 0 && !isCooling)
+            {
+                Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
+                if (isHeating && animation != null)
+                {
+                    animation = null;
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    mImage.SetColorFilter(filter);
+                    Control.SetImageDrawable(mImage);
+                }
+                DecreaseSaturation();
+            }
+            else if (animation != null)
+            {
+                if (increaseSaturation == 0)
+                {
+                    if(animation.IsStarted) animation.Pause();
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    mImage.SetColorFilter(filter);
+                    Control.SetImageDrawable(mImage);
+                }
+                else if ((increaseSaturation > 0 || increaseSaturation < 0) && animation.IsPaused) animation.Resume();
+            }
         }
     }
 }

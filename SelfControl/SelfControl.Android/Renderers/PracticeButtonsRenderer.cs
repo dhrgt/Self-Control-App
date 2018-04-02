@@ -18,23 +18,34 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(SelfControl.Helpers.CustomPracticeButtons), typeof(SelfControl.Droid.Renderers.PracticeButtonsRenderer))]
 namespace SelfControl.Droid.Renderers
 {
-    class PracticeButtonsRenderer : ButtonRenderer, Android.Views.View.IOnClickListener
+    class PracticeButtonsRenderer : ButtonRenderer, Android.Views.View.IOnTouchListener
     {
         Activity mActivity;
         public PracticeButtonsRenderer(Context context) : base(context)
         {
         }
 
-        public void OnClick(Android.Views.View v)
+        public bool OnTouch(Android.Views.View v, MotionEvent e)
         {
             var button = (SelfControl.Helpers.CustomPracticeButtons)Element;
-            button.OnTouch.image.IncreaseSaturation = 1;
+            switch (e.Action)
+            {
+                case MotionEventActions.ButtonPress:
+                    button.OnTouch.Execute(true);
+                    break;
+                case MotionEventActions.ButtonRelease:
+                    button.OnTouch.Execute(false);
+                    break;
+                default:
+                    break;
+            }
+            return true;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.Button> e)
         {
             base.OnElementChanged(e);
-            Control.SetOnClickListener(this);
+            Control.SetOnTouchListener(this);
             Control.Invalidate();
         }
 

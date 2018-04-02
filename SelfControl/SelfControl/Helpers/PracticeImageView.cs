@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Xamarin.Forms;
 
 namespace SelfControl.Helpers
 {
-    public class PracticeImageView : Image
+    public class PracticeImageView : Image, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler SaturationChanged;
+
         public static readonly BindableProperty ImageByteProperty =
         BindableProperty.Create("ImageByte", typeof(byte[]), typeof(PracticeImageView), null, propertyChanged: (bindable, oldValue, newValue) =>
         {
@@ -26,7 +30,16 @@ namespace SelfControl.Helpers
         public int IncreaseSaturation
         {
             get { return (int)GetValue(IncreaseSaturationProperty); }
-            set { SetValue(IncreaseSaturationProperty, value); }
+            set
+            {
+                Console.WriteLine("Increase Saturation Set" + System.Environment.NewLine);
+                SetValue(IncreaseSaturationProperty, value);
+                var eventHandler = this.SaturationChanged;
+                if (eventHandler != null)
+                {
+                    eventHandler.Invoke(this, new PropertyChangedEventArgs(nameof(IncreaseSaturationProperty)));
+                }
+            }
         }
     }
 }

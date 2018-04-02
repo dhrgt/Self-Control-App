@@ -1,5 +1,6 @@
 ﻿using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
+using SelfControl.Helpers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -34,6 +35,9 @@ namespace SelfControl.Models
 
             PanStartedCommand = new Command(() =>
             {
+                PanEnable = !PracticeFactory.isPlaying;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
+                if (!PanEnable) return; 
                 if (_nextIndex < ImageCount && PrevContext == null)
                 {
                     PrevContext = CreateContext(_nextIndex);
@@ -50,6 +54,9 @@ namespace SelfControl.Models
             PanPositionChangedCommand = new Command((p) =>
             {
                 var isNext = (bool)p;
+                PanEnable = !PracticeFactory.isPlaying;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
+                if (!PanEnable) return; 
                 if (isNext)
                 {
                     CurrentIndex += 1;
@@ -72,18 +79,14 @@ namespace SelfControl.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentIndex)));
             });
-
-            OnCool = new Command((p) =>
-            {
-                CurrentContext.Saturation = 1;
-            });
         }
 
         public PracticeFactory CurrentContext { get; set; }
         public PracticeFactory NextContext { get; set; }
         public PracticeFactory PrevContext { get; set; }
 
-        public ICommand OnCool { get; set;  }
+        
+        public bool PanEnable { get; set; }
 
         public ICommand PanStartedCommand { get; }
         public ICommand PanPositionChangedCommand { get; }
@@ -98,7 +101,7 @@ namespace SelfControl.Models
 
         private PracticeFactory CreateContext(int index)
         {
-            return new PracticeFactory { ByteSource = CreateSource(index), Saturation = 0 };
+            return new PracticeFactory { ByteSource = CreateSource(index) };
         }
 
         private byte[] CreateSource(int index)
