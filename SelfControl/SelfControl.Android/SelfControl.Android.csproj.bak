@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SelfControl.Droid</RootNamespace>
     <AssemblyName>SelfControl.Android</AssemblyName>
-    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -90,7 +90,6 @@
     <Compile Include="Renderers\CustomRadioButtonRenderer.cs" />
     <Compile Include="Renderers\ImageDisplayRenderer.cs" />
     <Compile Include="Renderers\PracticeButtonsRenderer.cs" />
-    <Compile Include="Renderers\PracticeImageViewRenderer.cs" />
     <Compile Include="Renderers\SliderEffect.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

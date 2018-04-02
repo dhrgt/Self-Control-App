@@ -3,6 +3,7 @@ using PanCardView.Controls;
 using SelfControl.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -42,22 +43,17 @@ namespace SelfControl.Helpers.Pages
             carouselView.SetBinding(CardsView.NextContextProperty, nameof(PracticeViewerModel.NextContext));
             carouselView.SetBinding(CardsView.PanStartedCommandProperty, nameof(PracticeViewerModel.PanStartedCommand));
             carouselView.SetBinding(CardsView.PositionChangedCommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
-
-            Grid grid = new Grid
+            AbsoluteLayout absoluteLayout = new AbsoluteLayout
             {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                RowDefinitions =
-                {
-                    new RowDefinition { Height = new GridLength(50, GridUnitType.Absolute) }
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) }
-                }
+                Margin = 10
             };
-            CustomPracticeButtons yesIcon = new CustomPracticeButtons
+            AbsoluteLayout.SetLayoutFlags(absoluteLayout, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(absoluteLayout, new Rectangle(1, 1, 1, 0.1));
+            StackLayout grid = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal
+            };
+            Image yesIcon = new Image
             {
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -67,12 +63,13 @@ namespace SelfControl.Helpers.Pages
             var heartStream = assembly.GetManifestResourceStream("SelfControl.Resources.heart_icon.png");
             var heartByte = new byte[heartStream.Length];
             heartStream.Read(heartByte, 0, System.Convert.ToInt32(heartStream.Length));
-            yesIcon.IconBytes = heartByte;
-            yesIcon.CommandParameter = false;
-            yesIcon.SetBinding(CustomPracticeButtons.OnClickProperty, nameof(PracticeViewerModel.PanStartedCommand));
-            yesIcon.SetBinding(CustomPracticeButtons.OnClickProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            yesIcon.Source = ImageSource.FromStream(() => new MemoryStream(heartByte));
+            TapGestureRecognizer yesTapped = new TapGestureRecognizer();
+            yesTapped.CommandParameter = false;
+            yesTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            yesIcon.GestureRecognizers.Add(yesTapped);
 
-            CustomPracticeButtons noIcon = new CustomPracticeButtons
+            Image noIcon = new Image
             {
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -82,10 +79,11 @@ namespace SelfControl.Helpers.Pages
             var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
             var cancelByte = new byte[cancelStream.Length];
             cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
-            noIcon.IconBytes = cancelByte;
-            noIcon.CommandParameter = true;
-            noIcon.SetBinding(CustomPracticeButtons.OnClickProperty, nameof(PracticeViewerModel.PanStartedCommand));
-            noIcon.SetBinding(CustomPracticeButtons.OnClickProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
+            TapGestureRecognizer noTapped = new TapGestureRecognizer();
+            noTapped.CommandParameter = true;
+            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            noIcon.GestureRecognizers.Add(noTapped);
 
             CustomPracticeButtons cool = new CustomPracticeButtons
             {
@@ -98,14 +96,15 @@ namespace SelfControl.Helpers.Pages
             var iceByte = new byte[iceStream.Length];
             iceStream.Read(iceByte, 0, System.Convert.ToInt32(iceStream.Length));
             cool.IconBytes = iceByte;
-            cool.SetBinding(CustomPracticeButtons.OnTouchProperty, nameof(PracticeViewerModel.OnCool));
+            cool.SetBinding(CustomPracticeButtons.OnTouchProperty, nameof(PracticeViewerModel.CurrentContext));
 
-            grid.Children.Add(noIcon, 0, 0);
-            grid.Children.Add(yesIcon, 1, 0);
-            grid.Children.Add(cool, 2, 0);
+            grid.Children.Add(noIcon);
+            grid.Children.Add(yesIcon);
+            grid.Children.Add(cool);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.1));
-            carouselView.Children.Add(grid);
+            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));
+            absoluteLayout.Children.Add(grid);
+            carouselView.Children.Add(absoluteLayout);
         }
     }
 }

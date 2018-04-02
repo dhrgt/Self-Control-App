@@ -73,7 +73,10 @@ namespace SelfControl.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentIndex)));
             });
 
-            OnCool = CurrentContext.temp;
+            OnCool = new Command((p) =>
+            {
+                CurrentContext.Saturation = 1;
+            });
         }
 
         public PracticeFactory CurrentContext { get; set; }
@@ -95,12 +98,12 @@ namespace SelfControl.Models
 
         private PracticeFactory CreateContext(int index)
         {
-            return new PracticeFactory { ByteSource = CreateSource(index) };
+            return new PracticeFactory { ByteSource = CreateSource(index), Saturation = 0 };
         }
 
-        private ImageSource CreateSource(int index)
+        private byte[] CreateSource(int index)
         {
-            return ImageSource.FromStream(() => new MemoryStream(imageFiles.ElementAt(index).Value));
+            return imageFiles.ElementAt(index).Value;
         }
     }
 }

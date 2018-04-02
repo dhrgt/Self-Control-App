@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SelfControl.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ namespace SelfControl.Helpers
         BindableProperty.Create("OnClick", typeof(ICommand), typeof(CustomPracticeButtons), null);
 
         public static readonly BindableProperty OnTouchProperty =
-        BindableProperty.Create("OnTouch", typeof(ICommand), typeof(CustomPracticeButtons), null);
+        BindableProperty.Create("OnTouch", typeof(PracticeFactory), typeof(CustomPracticeButtons), null);
 
         public static readonly BindableProperty IconBytesProperty =
         BindableProperty.Create("IconBytes", typeof(byte[]), typeof(CustomPracticeButtons), null, propertyChanged: (bindable, oldValue, newValue) =>
@@ -31,9 +32,9 @@ namespace SelfControl.Helpers
             set { SetValue(OnClickProperty, value); }
         }
 
-        public ICommand OnTouch
+        public PracticeFactory OnTouch
         {
-            get { return (ICommand)GetValue(OnTouchProperty); }
+            get { return (PracticeFactory)GetValue(OnTouchProperty); }
             set { SetValue(OnTouchProperty, value); }
         }
     }
