@@ -16,15 +16,16 @@ namespace SelfControl.Models
     {
         public byte[] ByteSource { get; set; }
         public CustomPracticeButtons cool { get; }
-        public CustomPracticeButtons hot { get; }
         public static bool isPlaying;
+        PracticeViewerModel parentModel { get; set; }
+        public PracticeImageView image { get; set; }
+        public ICommand heat { get; set; }
 
-        public ICommand temp;
-
-        public PracticeFactory()
+        public PracticeFactory(PracticeViewerModel practiceViewerModel = null)
         {
+            parentModel = practiceViewerModel;
             isPlaying = false;
-            PracticeImageView image = new PracticeImageView
+            image = new PracticeImageView
             {
                 Aspect = Aspect.AspectFit,
             };
@@ -48,37 +49,33 @@ namespace SelfControl.Models
                 if (Continue && !isPlaying)
                 {
                     isPlaying = true;
+                    if (parentModel != null) parentModel.PanEnable = false;
                     image.IncreaseSaturation = -1;
                 }
-                else if (!Continue && isPlaying)
+                else if (!Continue)
                 {
                     isPlaying = false;
+                    if (parentModel != null) parentModel.PanEnable = true;
                     image.IncreaseSaturation = 0;
                 }
             });
-
-            hot = new CustomPracticeButtons
-            {
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var fireStream = assembly.GetManifestResourceStream("SelfControl.Resources.fire_button.png");
-            var fireByte = new byte[fireStream.Length];
-            fireStream.Read(fireByte, 0, System.Convert.ToInt32(fireStream.Length));
-            hot.IconBytes = fireByte;
-            hot.OnTouch = new Command((p) =>
+            
+            heat = new Command((p) =>
             {
                 bool Continue = (bool)p;
                 if (Continue && !isPlaying)
                 {
                     isPlaying = true;
+                    if (parentModel != null)
+                    {
+                        parentModel.PanEnable = false;
+                    }
                     image.IncreaseSaturation = 1;
                 }
-                else if (!Continue && isPlaying)
+                else if (!Continue)
                 {
                     isPlaying = false;
+                    if (parentModel != null) parentModel.PanEnable = true;
                     image.IncreaseSaturation = 0;
                 }
             });
@@ -94,7 +91,6 @@ namespace SelfControl.Models
             {
                 Orientation = StackOrientation.Horizontal
             };
-            grid.Children.Add(hot);
             grid.Children.Add(cool);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));

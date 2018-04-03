@@ -7,9 +7,8 @@ using Xamarin.Forms;
 
 namespace SelfControl.Helpers
 {
-    public class PracticeImageView : Image, INotifyPropertyChanged
+    public class PracticeImageView : Image
     {
-        public event PropertyChangedEventHandler SaturationChanged;
 
         public static readonly BindableProperty ImageByteProperty =
         BindableProperty.Create("ImageByte", typeof(byte[]), typeof(PracticeImageView), null, propertyChanged: (bindable, oldValue, newValue) =>
@@ -27,6 +26,8 @@ namespace SelfControl.Helpers
             set { SetValue(ImageByteProperty, value); }
         }
 
+        public event EventHandler<int> SaturationIncreased;
+
         public int IncreaseSaturation
         {
             get { return (int)GetValue(IncreaseSaturationProperty); }
@@ -34,10 +35,10 @@ namespace SelfControl.Helpers
             {
                 Console.WriteLine("Increase Saturation Set" + System.Environment.NewLine);
                 SetValue(IncreaseSaturationProperty, value);
-                var eventHandler = this.SaturationChanged;
+                var eventHandler = this.SaturationIncreased;
                 if (eventHandler != null)
                 {
-                    eventHandler.Invoke(this, new PropertyChangedEventArgs(nameof(IncreaseSaturationProperty)));
+                    eventHandler.Invoke(this, value);
                 }
             }
         }

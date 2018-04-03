@@ -12,32 +12,33 @@ using Xamarin.Forms;
 
 namespace SelfControl.Models
 {
-    class PracticeViewerModel : INotifyPropertyChanged
+    public class PracticeViewerModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         int ImageCount;
         private int _currentIndex;
         private int _nextIndex;
+        private bool pan;
         Dictionary<int, byte[]> imageFiles;
 
         public PracticeViewerModel(Dictionary<int, byte[]> imageFiles, int index)
         {
+            pan = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
             this.imageFiles = imageFiles;
             ImageCount = imageFiles.Count;
             CurrentIndex = index;
             _nextIndex = index + 1;
             PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
             CurrentContext = CreateContext(_currentIndex);
-            NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
-
+            NextContext = _nextIndex >= ImageCount ? null : PrevContext;
+            heatImage = CurrentContext.image;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(heatImage)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentIndex)));
 
             PanStartedCommand = new Command(() =>
             {
-                PanEnable = !PracticeFactory.isPlaying;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
-                if (!PanEnable) return; 
                 if (_nextIndex < ImageCount && PrevContext == null)
                 {
                     PrevContext = CreateContext(_nextIndex);
@@ -54,16 +55,13 @@ namespace SelfControl.Models
             PanPositionChangedCommand = new Command((p) =>
             {
                 var isNext = (bool)p;
-                PanEnable = !PracticeFactory.isPlaying;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
-                if (!PanEnable) return; 
                 if (isNext)
                 {
                     CurrentIndex += 1;
                     _nextIndex++;
                     PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                     CurrentContext = NextContext;
-                    NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
+                    NextContext = _nextIndex >= ImageCount ? null : PrevContext;
                 }
                 else
                 {
@@ -71,9 +69,10 @@ namespace SelfControl.Models
                     ++_nextIndex;
                     NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                     CurrentContext = PrevContext;
-                    PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
+                    PrevContext = _nextIndex >= ImageCount ? null : PrevContext;
                 }
-
+                heatImage = CurrentContext.image;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(heatImage)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NextContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PrevContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentContext)));
@@ -85,9 +84,16 @@ namespace SelfControl.Models
         public PracticeFactory NextContext { get; set; }
         public PracticeFactory PrevContext { get; set; }
 
-        
-        public bool PanEnable { get; set; }
-
+        public bool PanEnable
+        {
+            get => pan;
+            set
+            {
+                pan = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
+            }
+        }
+        public PracticeImageView heatImage { get; set; }
         public ICommand PanStartedCommand { get; }
         public ICommand PanPositionChangedCommand { get; }
         public int CurrentIndex
@@ -101,7 +107,7 @@ namespace SelfControl.Models
 
         private PracticeFactory CreateContext(int index)
         {
-            return new PracticeFactory { ByteSource = CreateSource(index) };
+            return new PracticeFactory(this) { ByteSource = CreateSource(index) };
         }
 
         private byte[] CreateSource(int index)

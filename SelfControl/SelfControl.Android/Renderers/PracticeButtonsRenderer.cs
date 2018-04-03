@@ -30,10 +30,12 @@ namespace SelfControl.Droid.Renderers
             var button = (SelfControl.Helpers.CustomPracticeButtons)Element;
             switch (e.Action)
             {
-                case MotionEventActions.ButtonPress:
+                case MotionEventActions.Down:
                     button.OnTouch.Execute(true);
                     break;
-                case MotionEventActions.ButtonRelease:
+                case MotionEventActions.Outside:
+                case MotionEventActions.Up:
+                case MotionEventActions.Cancel:
                     button.OnTouch.Execute(false);
                     break;
                 default:

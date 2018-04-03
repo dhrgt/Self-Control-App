@@ -28,6 +28,7 @@ namespace SelfControl.Droid.Renderers
         bool isHeating;
         bool isCooling;
         ValueAnimator animation;
+
         public PracticeImageViewRenderer(Context context) : base(context)
         {
             Console.WriteLine("new PracticeImageRenderer created" + System.Environment.NewLine);
@@ -42,8 +43,19 @@ namespace SelfControl.Droid.Renderers
         {
             Console.WriteLine("OnElementChanged" + System.Environment.NewLine);
             base.OnElementChanged(e);
-            var image = (SelfControl.Helpers.PracticeImageView)Element;
-            image.SaturationChanged += this.OnElementPropertyChanged;
+            
+            
+            if (e.OldElement != null)
+            {
+                var image = (SelfControl.Helpers.PracticeImageView)e.OldElement;
+                image.SaturationIncreased -= OnSaturationChange;
+            }
+
+            if (e.NewElement != null)
+            {
+                var image = (SelfControl.Helpers.PracticeImageView)e.NewElement;
+                image.SaturationIncreased += OnSaturationChange;
+            }
             Control.Invalidate();
         }
 
@@ -52,7 +64,7 @@ namespace SelfControl.Droid.Renderers
             if(mImage != null)
             {
                 animation = ValueAnimator.OfFloat(saturation, 2f);
-                animation.SetDuration(10000);
+                animation.SetDuration(5000);
                 animation.AddUpdateListener(this);
                 animation.Start();
                 isHeating = true;
@@ -65,7 +77,7 @@ namespace SelfControl.Droid.Renderers
             if (mImage != null)
             {
                 animation = ValueAnimator.OfFloat(saturation, 0f);
-                animation.SetDuration(10000);
+                animation.SetDuration(5000);
                 animation.AddUpdateListener(this);
                 animation.Start();
                 isCooling = true;
@@ -82,25 +94,9 @@ namespace SelfControl.Droid.Renderers
             Control.SetImageDrawable(mImage);
         }
 
-        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        void OnSaturationChange(object sender, int e)
         {
-            Console.WriteLine("OnElementPropertyChanged : " + e.PropertyName + System.Environment.NewLine);
-            base.OnElementPropertyChanged(sender, e);
-            Activity mActivity = Context as Activity;
-            var image = (SelfControl.Helpers.PracticeImageView)sender;
-            var bytes = image.ImageByte;
-            var increaseSaturation = image.IncreaseSaturation;
-
-            if ((Element.Width > 0 && Element.Height > 0))
-            {
-                if (bytes != null)
-                {
-                    mImage = new BitmapDrawable(mActivity.Resources, BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length));
-                    
-                    Control.SetImageDrawable(mImage);
-                }
-            }
-            if (increaseSaturation > 0 && !isHeating)
+            if (e > 0 && !isHeating)
             {
                 Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
                 if (isCooling && animation != null)
@@ -112,7 +108,7 @@ namespace SelfControl.Droid.Renderers
                 }
                 IncreaseSaturation();
             }
-            else if (increaseSaturation < 0 && !isCooling)
+            else if (e < 0 && !isCooling)
             {
                 Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
                 if (isHeating && animation != null)
@@ -126,14 +122,33 @@ namespace SelfControl.Droid.Renderers
             }
             else if (animation != null)
             {
-                if (increaseSaturation == 0)
+                if (e == 0)
                 {
-                    if(animation.IsStarted) animation.Pause();
+                    if (animation.IsStarted) animation.Pause();
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     mImage.SetColorFilter(filter);
                     Control.SetImageDrawable(mImage);
                 }
-                else if ((increaseSaturation > 0 || increaseSaturation < 0) && animation.IsPaused) animation.Resume();
+                else if ((e > 0 || e < 0) && animation.IsPaused) animation.Resume();
+            }
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Console.WriteLine("OnElementPropertyChanged : " + e.PropertyName + System.Environment.NewLine);
+            base.OnElementPropertyChanged(sender, e);
+            Activity mActivity = Context as Activity;
+            var image = (SelfControl.Helpers.PracticeImageView)sender;
+            var bytes = image.ImageByte;
+
+            if ((Element.Width > 0 && Element.Height > 0))
+            {
+                if (bytes != null)
+                {
+                    mImage = new BitmapDrawable(mActivity.Resources, BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length));
+                    
+                    Control.SetImageDrawable(mImage);
+                }
             }
         }
     }
