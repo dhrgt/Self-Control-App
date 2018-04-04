@@ -32,9 +32,7 @@ namespace SelfControl.Models
             _nextIndex = index + 1;
             PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
             CurrentContext = CreateContext(_currentIndex);
-            NextContext = _nextIndex >= ImageCount ? null : PrevContext;
-            heatImage = CurrentContext.image;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(heatImage)));
+            NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentIndex)));
 
             PanStartedCommand = new Command(() =>
@@ -61,7 +59,7 @@ namespace SelfControl.Models
                     _nextIndex++;
                     PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                     CurrentContext = NextContext;
-                    NextContext = _nextIndex >= ImageCount ? null : PrevContext;
+                    NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                 }
                 else
                 {
@@ -69,10 +67,8 @@ namespace SelfControl.Models
                     ++_nextIndex;
                     NextContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                     CurrentContext = PrevContext;
-                    PrevContext = _nextIndex >= ImageCount ? null : PrevContext;
+                    PrevContext = _nextIndex >= ImageCount ? null : CreateContext(_nextIndex);
                 }
-                heatImage = CurrentContext.image;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(heatImage)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NextContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PrevContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentContext)));
@@ -93,7 +89,6 @@ namespace SelfControl.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
             }
         }
-        public PracticeImageView heatImage { get; set; }
         public ICommand PanStartedCommand { get; }
         public ICommand PanPositionChangedCommand { get; }
         public int CurrentIndex
@@ -107,7 +102,7 @@ namespace SelfControl.Models
 
         private PracticeFactory CreateContext(int index)
         {
-            return new PracticeFactory(this) { ByteSource = CreateSource(index) };
+            return new PracticeFactory() { ByteSource = CreateSource(index) };
         }
 
         private byte[] CreateSource(int index)

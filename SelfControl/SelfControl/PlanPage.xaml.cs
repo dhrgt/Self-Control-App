@@ -164,30 +164,6 @@ namespace SelfControl
             noTapped.CommandParameter = true;
             noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
             noIcon.GestureRecognizers.Add(noTapped);
-            var hot = new CustomPracticeButtons
-            {
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60,
-            };
-            var fireStream = assembly.GetManifestResourceStream("SelfControl.Resources.fire_button.png");
-            var fireByte = new byte[fireStream.Length];
-            fireStream.Read(fireByte, 0, System.Convert.ToInt32(fireStream.Length));
-            hot.IconBytes = fireByte;
-            this.SetBinding(PlanPage.CurrentPracticeImageProperty, nameof(PracticeViewerModel.heatImage));
-            hot.OnTouch = new Command((p) =>
-            {
-                bool Continue = (bool)p;
-                if (Continue)
-                {
-                    CurrentPracticeImage.IncreaseSaturation = 1;
-                }
-                else if (!Continue)
-                {
-                    CurrentPracticeImage.IncreaseSaturation = 0;
-                }
-            });
 
             AbsoluteLayout absoluteLayout = new AbsoluteLayout
             {
@@ -203,15 +179,11 @@ namespace SelfControl
             };
             grid.Children.Add(yesIcon);
             grid.Children.Add(noIcon);
-            grid.Children.Add(hot);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));
             absoluteLayout.Children.Add(grid);
-            Grid l = new Grid();
-            l.Children.Add(practiceViewer.carouselView);
-            l.Children.Add(absoluteLayout);
-            //practiceViewer.carouselView.Children.Add(absoluteLayout);
-            Content = l;
+            practiceViewer.carouselView.Children.Add(absoluteLayout);
+            Content = practiceViewer.carouselView;
             BindingContext = new PracticeViewerModel(practiceViewer.list, 0);
         }
     }

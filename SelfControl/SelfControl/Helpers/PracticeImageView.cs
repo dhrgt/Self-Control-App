@@ -26,8 +26,6 @@ namespace SelfControl.Helpers
             set { SetValue(ImageByteProperty, value); }
         }
 
-        public event EventHandler<int> SaturationIncreased;
-
         public int IncreaseSaturation
         {
             get { return (int)GetValue(IncreaseSaturationProperty); }
@@ -35,11 +33,6 @@ namespace SelfControl.Helpers
             {
                 Console.WriteLine("Increase Saturation Set" + System.Environment.NewLine);
                 SetValue(IncreaseSaturationProperty, value);
-                var eventHandler = this.SaturationIncreased;
-                if (eventHandler != null)
-                {
-                    eventHandler.Invoke(this, value);
-                }
             }
         }
     }

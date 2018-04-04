@@ -36,8 +36,9 @@ namespace SelfControl.Helpers.Pages
             {
                 ItemTemplate = new DataTemplate(() => new PracticeFactory()),
                 BackgroundColor = Color.Black,
+                IsPanEnabled = false
             };
-            carouselView.SetBinding(CardsView.IsPanEnabledProperty, nameof(PracticeViewerModel.PanEnable));
+            //carouselView.SetBinding(CardsView.IsPanEnabledProperty, nameof(PracticeViewerModel.PanEnable));
             carouselView.SetBinding(CardsView.PrevContextProperty, nameof(PracticeViewerModel.PrevContext));
             carouselView.SetBinding(CardsView.CurrentContextProperty, nameof(PracticeViewerModel.CurrentContext));
             carouselView.SetBinding(CardsView.NextContextProperty, nameof(PracticeViewerModel.NextContext));
