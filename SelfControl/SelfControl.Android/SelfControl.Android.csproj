@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SelfControl.Droid</RootNamespace>
     <AssemblyName>SelfControl.Android</AssemblyName>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -118,6 +118,10 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\repos\CardView\PanCardView.Droid\PanCardView.Droid.csproj">
+      <Project>{47a15982-1485-4e70-8440-84efba28c584}</Project>
+      <Name>PanCardView.Droid</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SelfControl\SelfControl.csproj">
       <Project>{70ED72D6-3F88-4D53-B62C-F66DC97C6058}</Project>
       <Name>SelfControl</Name>
