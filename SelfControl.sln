@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfControl.iOS", "SelfCont
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfControl", "SelfControl\SelfControl\SelfControl.csproj", "{21612DA4-92B8-43F5-B950-BBC5FABA5A97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanCardView", "..\..\source\repos\CardView\PanCardView\PanCardView.csproj", "{662BF768-43C5-4A71-8F1E-7FA54DD6157A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanCardView", "SelfControl\PanCardView\PanCardView.csproj", "{662BF768-43C5-4A71-8F1E-7FA54DD6157A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanCardView.Droid", "..\..\source\repos\CardView\PanCardView.Droid\PanCardView.Droid.csproj", "{47A15982-1485-4E70-8440-84EFBA28C584}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanCardView.Droid", "SelfControl\PanCardView.Droid\PanCardView.Droid.csproj", "{47A15982-1485-4E70-8440-84EFBA28C584}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

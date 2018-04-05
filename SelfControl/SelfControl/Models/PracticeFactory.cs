@@ -16,6 +16,7 @@ namespace SelfControl.Models
     {
         public byte[] ByteSource { get; set; }
         public static bool isPlaying;
+        public ICommand hot, cool;
 
         public PracticeFactory()
         {
@@ -26,7 +27,7 @@ namespace SelfControl.Models
             };
             
             image.SetBinding(PracticeImageView.ImageByteProperty, "ByteSource");
-            var cool = new CustomPracticeButtons
+            /*var cool = new CustomPracticeButtons
             {
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.EndAndExpand,
@@ -37,8 +38,8 @@ namespace SelfControl.Models
             var iceStream = assembly.GetManifestResourceStream("SelfControl.Resources.ice_button.png");
             var iceByte = new byte[iceStream.Length];
             iceStream.Read(iceByte, 0, System.Convert.ToInt32(iceStream.Length));
-            cool.IconBytes = iceByte;
-            cool.OnTouch = new Command((p) =>
+            cool.IconBytes = iceByte;*/
+            cool = new Command((p) =>
             {
                 bool Continue = (bool)p;
                 if (Continue && !isPlaying)
@@ -52,7 +53,7 @@ namespace SelfControl.Models
                     image.IncreaseSaturation = 0;
                 }
             });
-            var hot = new CustomPracticeButtons
+            /*var hot = new CustomPracticeButtons
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand,
@@ -62,8 +63,8 @@ namespace SelfControl.Models
             var fireStream = assembly.GetManifestResourceStream("SelfControl.Resources.fire_button.png");
             var fireByte = new byte[fireStream.Length];
             fireStream.Read(fireByte, 0, System.Convert.ToInt32(fireStream.Length));
-            hot.IconBytes = fireByte;
-            hot.OnTouch = new Command((p) =>
+            hot.IconBytes = fireByte;*/
+            hot = new Command((p) =>
             {
                 bool Continue = (bool)p;
                 if (Continue && !isPlaying)
@@ -77,7 +78,7 @@ namespace SelfControl.Models
                     image.IncreaseSaturation = 0;
                 }
             });
-            AbsoluteLayout absoluteLayout = new AbsoluteLayout
+            /*AbsoluteLayout absoluteLayout = new AbsoluteLayout
             {
                 Margin = 10,
                 VerticalOptions = LayoutOptions.EndAndExpand,
@@ -94,9 +95,9 @@ namespace SelfControl.Models
             
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));
-            absoluteLayout.Children.Add(grid);
+            absoluteLayout.Children.Add(grid);*/
             Children.Add(image);
-            Children.Add(absoluteLayout);
+            //Children.Add(absoluteLayout);
         }
     }
 }

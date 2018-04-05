@@ -43,6 +43,7 @@ namespace SelfControl.Helpers.Pages
             carouselView.SetBinding(CardsView.NextContextProperty, nameof(PracticeViewerModel.NextContext));
             carouselView.SetBinding(CardsView.PanStartedCommandProperty, nameof(PracticeViewerModel.PanStartedCommand));
             carouselView.SetBinding(CardsView.PositionChangedCommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            
         }
     }
 }

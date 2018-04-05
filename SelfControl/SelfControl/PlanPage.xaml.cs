@@ -26,17 +26,6 @@ namespace SelfControl
             iv.CurrentIndex = (int)newValue;
         });
 
-        public static readonly BindableProperty CurrentPracticeImageProperty =
-        BindableProperty.Create("CurrentPracticeImage", typeof(PracticeImageView), typeof(PlanPage), null, propertyChanged: (bindable, oldValue, newValue) =>
-        {
-        });
-
-        public PracticeImageView CurrentPracticeImage
-        {
-            get { return (PracticeImageView)GetValue(CurrentPracticeImageProperty); }
-            set { SetValue(CurrentPracticeImageProperty, value); }
-        }
-
         public int CurrentIndex
         {
             get => _currentIndex;
@@ -51,6 +40,7 @@ namespace SelfControl
         PracticeViewer practiceViewer;
         public Image yesIcon;
         public Image noIcon;
+        CustomPracticeButtons hot, cool;
 
         public PlanPage()
         {
@@ -165,26 +155,59 @@ namespace SelfControl
             noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
             noIcon.GestureRecognizers.Add(noTapped);
 
-            AbsoluteLayout absoluteLayout = new AbsoluteLayout
+            cool = new CustomPracticeButtons
             {
-                Margin = 10,
-                VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60
             };
-            AbsoluteLayout.SetLayoutFlags(absoluteLayout, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(absoluteLayout, new Rectangle(1, 1, 1, 0.1));
+            var iceStream = assembly.GetManifestResourceStream("SelfControl.Resources.ice_button.png");
+            var iceByte = new byte[iceStream.Length];
+            iceStream.Read(iceByte, 0, System.Convert.ToInt32(iceStream.Length));
+            cool.IconBytes = iceByte;
+            hot = new CustomPracticeButtons
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60,
+            };
+            var fireStream = assembly.GetManifestResourceStream("SelfControl.Resources.fire_button.png");
+            var fireByte = new byte[fireStream.Length];
+            fireStream.Read(fireByte, 0, System.Convert.ToInt32(fireStream.Length));
+            hot.IconBytes = fireByte;
+            AbsoluteLayout.SetLayoutFlags(practiceViewer.carouselView, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(practiceViewer.carouselView, new Rectangle(0, 0, 1, 0.88));
             StackLayout grid = new StackLayout
             {
-                Orientation = StackOrientation.Horizontal
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.Black
             };
+            grid.Children.Add(hot);
             grid.Children.Add(yesIcon);
             grid.Children.Add(noIcon);
+            grid.Children.Add(cool);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 1));
-            absoluteLayout.Children.Add(grid);
-            practiceViewer.carouselView.Children.Add(absoluteLayout);
-            Content = practiceViewer.carouselView;
-            BindingContext = new PracticeViewerModel(practiceViewer.list, 0);
+            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.12));
+
+            AbsoluteLayout fullView = new AbsoluteLayout();
+            fullView.Children.Add(practiceViewer.carouselView);
+            fullView.Children.Add(grid);
+            practiceViewer.carouselView.ViewChanged += GetCurrentView;
+            BindingContext = new PracticeViewerModel(practiceViewer.carouselView, practiceViewer.list, 0);
+            this.BackgroundColor = Color.Black;
+            Content = fullView;
+        }
+
+        private void GetCurrentView(object sender, EventArgs e)
+        {
+            var view = (PracticeFactory)practiceViewer.carouselView._currentView;
+            if (view != null)
+            {
+                cool.OnTouch = view.cool;
+                hot.OnTouch = view.hot;
+            }
         }
     }
 }

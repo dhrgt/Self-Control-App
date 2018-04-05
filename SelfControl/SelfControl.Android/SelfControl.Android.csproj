@@ -118,7 +118,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\source\repos\CardView\PanCardView.Droid\PanCardView.Droid.csproj">
+    <ProjectReference Include="..\PanCardView.Droid\PanCardView.Droid.csproj">
       <Project>{47a15982-1485-4e70-8440-84efba28c584}</Project>
       <Name>PanCardView.Droid</Name>
     </ProjectReference>

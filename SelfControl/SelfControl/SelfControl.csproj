@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\source\repos\CardView\PanCardView\PanCardView.csproj" />
+    <ProjectReference Include="..\PanCardView\PanCardView.csproj" />
   </ItemGroup>
 
   <ItemGroup>

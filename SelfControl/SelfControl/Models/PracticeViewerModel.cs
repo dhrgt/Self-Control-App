@@ -22,10 +22,8 @@ namespace SelfControl.Models
         private bool pan;
         Dictionary<int, byte[]> imageFiles;
 
-        public PracticeViewerModel(Dictionary<int, byte[]> imageFiles, int index)
+        public PracticeViewerModel(PanCardView.CardsView view, Dictionary<int, byte[]> imageFiles, int index)
         {
-            pan = true;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
             this.imageFiles = imageFiles;
             ImageCount = imageFiles.Count;
             CurrentIndex = index;
@@ -80,15 +78,7 @@ namespace SelfControl.Models
         public PracticeFactory NextContext { get; set; }
         public PracticeFactory PrevContext { get; set; }
 
-        public bool PanEnable
-        {
-            get => pan;
-            set
-            {
-                pan = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PanEnable)));
-            }
-        }
+        public bool _currentView { get; set; }
         public ICommand PanStartedCommand { get; }
         public ICommand PanPositionChangedCommand { get; }
         public int CurrentIndex
