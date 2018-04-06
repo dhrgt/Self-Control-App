@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;RANDOM;</DefineConstants>
+    <DefineConstants>DEBUG;SELECT;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
@@ -46,6 +46,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <EnableProguard>true</EnableProguard>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

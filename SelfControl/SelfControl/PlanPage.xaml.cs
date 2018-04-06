@@ -17,41 +17,23 @@ namespace SelfControl
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class PlanPage : ContentPage
 	{
-        int _currentIndex;
-
-        public static readonly BindableProperty CurrentIndexProperty =
-        BindableProperty.Create("CurrentIndex", typeof(int), typeof(PlanPage), -1, propertyChanged: (bindable, oldValue, newValue) =>
-        {
-            var iv = (PlanPage)bindable;
-            iv.CurrentIndex = (int)newValue;
-        });
-
-        public int CurrentIndex
-        {
-            get => _currentIndex;
-            set
-            {
-                _currentIndex = value;
-                if (_currentIndex == GlobalVariables.PRACTICE_NUMBER) Navigation.PopAsync();
-            }
-        }
-
         List<FoodItem> ChosenItems;
-        PracticeViewer practiceViewer;
-        public Image yesIcon;
-        public Image noIcon;
-        CustomPracticeButtons hot, cool;
+        Grid viewGallery;
+        List<FoodItem> FoodItems;
+        bool ContinueOption;
+        ToolbarItem continueToolBar;
 
         public PlanPage()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
+            ContinueOption = false;
             ChosenItems = new List<FoodItem>(GlobalVariables.PRACTICE_NUMBER);
             InitializeComponent();
-
-            Randomizer randomizer = new Randomizer();
-            List<FoodItem> FoodItems = GlobalVariables.getFoodItems();
+            
+            FoodItems = GlobalVariables.getFoodItems();
 
 #if RANDOM
+            NavigationPage.SetHasNavigationBar(this, false);
+            Randomizer randomizer = new Randomizer();
             List<int> list;
             if (Settings.RandomCriteriaValue == (int)GlobalVariables.RandomCriteria.Random)
             {
@@ -118,96 +100,120 @@ namespace SelfControl
                     ChosenItems.Add(FoodItems[intervals[i]]);
                 }
             }
+
+#elif SELECT
+            Title = "Selected 0";
+            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
+            viewGallery = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
+                 },
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            SetView();
+            Update();
 #endif
-            Assembly assembly = typeof(PlanPage).GetTypeInfo().Assembly;
-            practiceViewer = new PracticeViewer(ChosenItems);
-            this.SetBinding(PlanPage.CurrentIndexProperty, nameof(PracticeViewerModel.CurrentIndex));
-
-            yesIcon = new Image
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var heartStream = assembly.GetManifestResourceStream("SelfControl.Resources.heart_icon.png");
-            var heartByte = new byte[heartStream.Length];
-            heartStream.Read(heartByte, 0, System.Convert.ToInt32(heartStream.Length));
-            yesIcon.Source = ImageSource.FromStream(() => new MemoryStream(heartByte));
-            TapGestureRecognizer yesTapped = new TapGestureRecognizer();
-            yesTapped.CommandParameter = false;
-            yesTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
-            yesIcon.GestureRecognizers.Add(yesTapped);
-
-            noIcon = new Image
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
-            var cancelByte = new byte[cancelStream.Length];
-            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
-            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
-            TapGestureRecognizer noTapped = new TapGestureRecognizer();
-            noTapped.CommandParameter = true;
-            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
-            noIcon.GestureRecognizers.Add(noTapped);
-
-            cool = new CustomPracticeButtons
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var iceStream = assembly.GetManifestResourceStream("SelfControl.Resources.ice_button.png");
-            var iceByte = new byte[iceStream.Length];
-            iceStream.Read(iceByte, 0, System.Convert.ToInt32(iceStream.Length));
-            cool.IconBytes = iceByte;
-            hot = new CustomPracticeButtons
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60,
-            };
-            var fireStream = assembly.GetManifestResourceStream("SelfControl.Resources.fire_button.png");
-            var fireByte = new byte[fireStream.Length];
-            fireStream.Read(fireByte, 0, System.Convert.ToInt32(fireStream.Length));
-            hot.IconBytes = fireByte;
-            AbsoluteLayout.SetLayoutFlags(practiceViewer.carouselView, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(practiceViewer.carouselView, new Rectangle(0, 0, 1, 0.88));
-            StackLayout grid = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.Black
-            };
-            grid.Children.Add(hot);
-            grid.Children.Add(yesIcon);
-            grid.Children.Add(noIcon);
-            grid.Children.Add(cool);
-            AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.12));
-
-            AbsoluteLayout fullView = new AbsoluteLayout();
-            fullView.Children.Add(practiceViewer.carouselView);
-            fullView.Children.Add(grid);
-            practiceViewer.carouselView.ViewChanged += GetCurrentView;
-            BindingContext = new PracticeViewerModel(practiceViewer.carouselView, practiceViewer.list, 0);
-            this.BackgroundColor = Color.Black;
-            Content = fullView;
         }
 
-        private void GetCurrentView(object sender, EventArgs e)
+        public void Update()
         {
-            var view = (PracticeFactory)practiceViewer.carouselView._currentView;
-            if (view != null)
+            Device.BeginInvokeOnMainThread(() =>
             {
-                cool.OnTouch = view.cool;
-                hot.OnTouch = view.hot;
+                this.Content = viewGallery;
+            });
+        }
+
+        private void SetView()
+        {
+            viewGallery.Children.Clear();
+            int colNum = 0;
+            int rowNum = 0;
+            foreach (var food in FoodItems)
+            {
+                byte[] thumbnail = Helpers.GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES);
+                if (thumbnail != null)
+                {
+                    ImageDisplay bmp = new ImageDisplay
+                    {
+                         ImageByte = thumbnail,
+                         WidthRequest = App.ScreenWidth / 4,
+                         HeightRequest = App.ScreenWidth / 4,
+                         Aspect = Aspect.AspectFill,
+                         DatabaseItem = food
+                    };
+                    bmp.OnTouch = new Command((p) =>
+                    {
+                        Console.WriteLine("LongClick");
+                        bmp.IsSelected = !bmp.IsSelected;
+                        if (bmp.IsSelected)
+                        {
+                            ChosenItems.Add(food);
+                            UpdateTitle();
+                        }
+                        else
+                        {
+                             ChosenItems.Remove(food);
+                             UpdateTitle();
+                        }
+                    });
+                    bmp.OnClick = new Command((p) =>
+                    {
+                        bmp.IsSelected = !bmp.IsSelected;
+                        if (bmp.IsSelected)
+                        {
+                            ChosenItems.Add(food);
+                            UpdateTitle();
+                        }
+                        else
+                        {
+                            ChosenItems.Remove(food);
+                            UpdateTitle();
+                        }
+                    });
+                    
+                    if (colNum == 3)
+                    {
+                        rowNum++;
+                        colNum = 0;
+                    }
+                    viewGallery.Children.Add(bmp, colNum, rowNum);
+                    colNum++;
+                }
             }
         }
+
+        public void UpdateTitle()
+        {
+            Title = "Selected " + ChosenItems.Count.ToString();
+            MakeOptionsVisible();
+        }
+
+        public void MakeOptionsVisible()
+        {
+            if (ChosenItems.Count < 1)
+            {
+                ToolbarItems.Remove(continueToolBar);
+                ContinueOption = false;
+            }
+            else if (ChosenItems.Count > 0 && !ContinueOption)
+            {
+                ToolbarItems.Add(continueToolBar);
+                ContinueOption = true;
+            }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+#if RANDOM
+            Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true);
+#endif
+        }
+
     }
 }

@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using static SelfControl.Helpers.GlobalVariables;
@@ -81,9 +81,49 @@ namespace SelfControl
                             WidthRequest = App.ScreenWidth / 4,
                             HeightRequest = App.ScreenWidth / 4,
                             Aspect = Aspect.AspectFill,
-                            DatabaseItem = food,
-                            ParentPage = this
+                            DatabaseItem = food
                         };
+                        bmp.OnTouch = new Command((p) =>
+                        {
+                            Console.WriteLine("LongClick");
+                            if (mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Normal)
+                            {
+                                mode = SelfControl.Helpers.GlobalVariables.GalleryMode.Selection;
+                                MakeOptionsVisible();
+                            }
+                            bmp.IsSelected = !bmp.IsSelected;
+                            if (bmp.IsSelected)
+                            {
+                                selectedItems.Add(bmp);
+                                UpdateTitle();
+                            }
+                            else
+                            {
+                                selectedItems.Remove(bmp);
+                                UpdateTitle();
+                            }
+                        });
+                        bmp.OnClick = new Command((p) =>
+                        {
+                            if (mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Selection)
+                            {
+                                bmp.IsSelected = !bmp.IsSelected;
+                                if (bmp.IsSelected)
+                                {
+                                    selectedItems.Add(bmp);
+                                    UpdateTitle();
+                                }
+                                else
+                                {
+                                    selectedItems.Remove(bmp);
+                                    UpdateTitle();
+                                }
+                            }
+                            else
+                            {
+                                NagivateImageViewer(bmp.DatabaseItem);
+                            }
+                        });
                         images.Add(bmp);
                     }
                 }

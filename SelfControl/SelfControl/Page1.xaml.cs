@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace SelfControl
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ReviewPage : ContentPage
+	public partial class Page1 : ContentPage
 	{
-		public ReviewPage ()
+		public Page1 ()
 		{
 			InitializeComponent ();
 		}

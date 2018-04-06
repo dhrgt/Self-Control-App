@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SelfControl.Helpers
@@ -32,11 +33,6 @@ namespace SelfControl.Helpers
         {
         });
 
-        public static readonly BindableProperty ParentPageProperty =
-        BindableProperty.Create("ParentPage", typeof(GalleryPage), typeof(ImageDisplay), null, propertyChanged: (bindable, oldValue, newValue) =>
-        {
-        });
-
         public static readonly BindableProperty ImageByteProperty =
         BindableProperty.Create("ImageByte", typeof(byte[]), typeof(ImageDisplay), null, propertyChanged: (bindable, oldValue, newValue) =>
         {
@@ -48,6 +44,12 @@ namespace SelfControl.Helpers
                 baseImage.Source = ImageSource.FromStream(() => new MemoryStream(image.ImageByte));
             }
         });
+
+        public static readonly BindableProperty OnClickProperty =
+        BindableProperty.Create("OnClick", typeof(ICommand), typeof(ImageDisplay), null);
+
+        public static readonly BindableProperty OnTouchProperty =
+        BindableProperty.Create("OnTouch", typeof(ICommand), typeof(ImageDisplay), null);
 
         public string ImageFile
         {
@@ -73,10 +75,16 @@ namespace SelfControl.Helpers
             set { SetValue(ImageIdProperty, value); }
         }
 
-        public GalleryPage ParentPage
+        public ICommand OnClick
         {
-            get { return (GalleryPage)GetValue(ParentPageProperty); }
-            set { SetValue(ParentPageProperty, value); }
+            get { return (ICommand)GetValue(OnClickProperty); }
+            set { SetValue(OnClickProperty, value); }
+        }
+
+        public ICommand OnTouch
+        {
+            get { return (ICommand)GetValue(OnTouchProperty); }
+            set { SetValue(OnTouchProperty, value); }
         }
     }
 }

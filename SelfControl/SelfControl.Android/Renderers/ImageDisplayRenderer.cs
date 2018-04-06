@@ -31,46 +31,16 @@ namespace SelfControl.Droid.Renderers
         public void OnClick(Android.Views.View v)
         {
             var image = (SelfControl.Helpers.ImageDisplay)Element;
-            if (image.ParentPage.mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Selection)
-            {
-                image.IsSelected = !image.IsSelected;
-                if (image.IsSelected)
-                {
-                    image.ParentPage.selectedItems.Add(image);
-                    image.ParentPage.UpdateTitle();
-                }
-                else
-                {
-                    image.ParentPage.selectedItems.Remove(image);
-                    image.ParentPage.UpdateTitle();
-                }
-            }
-            else
-            {
-                image.ParentPage.NagivateImageViewer(image.DatabaseItem);
-            }
+            if(image.OnClick != null)
+                image.OnClick.Execute(true);
         }
 
         public bool OnLongClick(Android.Views.View v)
         {
             Console.WriteLine("LongClick");
             var image = (SelfControl.Helpers.ImageDisplay)Element;
-            if (image.ParentPage.mode == SelfControl.Helpers.GlobalVariables.GalleryMode.Normal)
-            {
-                image.ParentPage.mode = SelfControl.Helpers.GlobalVariables.GalleryMode.Selection;
-                image.ParentPage.MakeOptionsVisible();
-            }
-            image.IsSelected = !image.IsSelected;
-            if (image.IsSelected)
-            {
-                image.ParentPage.selectedItems.Add(image);
-                image.ParentPage.UpdateTitle();
-            }
-            else
-            {
-                image.ParentPage.selectedItems.Remove(image);
-                image.ParentPage.UpdateTitle();
-            }
+            if (image.OnTouch != null)
+                image.OnTouch.Execute(true);
             return true;
         }
 

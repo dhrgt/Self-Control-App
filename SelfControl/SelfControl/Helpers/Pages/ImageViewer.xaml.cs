@@ -110,8 +110,8 @@ namespace SelfControl.Helpers.Pages
             carouselView.SetBinding(CardsView.PanStartedCommandProperty, nameof(ImageViewerModel.PanStartedCommand));
             carouselView.SetBinding(CardsView.PositionChangedCommandProperty, nameof(ImageViewerModel.PanPositionChangedCommand));
 
-            ToolbarItem deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
-            ToolbarItem editOption = new ToolbarItem("Edit", "", new Action(() => { Navigation.PushAsync(new EditDetailsPage(getCurrentID(), GlobalVariables.EntryType.UPDATE_ENTRY)); }), ToolbarItemOrder.Primary, 1);
+            //ToolbarItem deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
+            ToolbarItem editOption = new ToolbarItem("Edit", "", new Action(() => { Navigation.PushAsync(new EditDetailsPage(getCurrentID(), GlobalVariables.EntryType.UPDATE_ENTRY)); }), ToolbarItemOrder.Primary, 0);
 
             AbsoluteLayout UserPrefs = new AbsoluteLayout
             {
@@ -178,7 +178,7 @@ namespace SelfControl.Helpers.Pages
             carouselView.Children.Add(UserPrefs);
 
             Content = carouselView;
-            ToolbarItems.Add(deleteOption);
+            //ToolbarItems.Add(deleteOption);
             ToolbarItems.Add(editOption);
             BindingContext = new ImageViewerModel(list, index);
         }
