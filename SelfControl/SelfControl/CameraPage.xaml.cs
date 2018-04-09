@@ -44,7 +44,7 @@ namespace SelfControl
 
         async private void CheckForStage2()
         {
-            List<FoodItem> food = await GlobalVariables.cm.QueryByDateTime();
+            List<FoodItem> food = await GlobalVariables.foodItemsDatabse.QueryByDateTime();
             if (food.Count == GlobalVariables.SIZE_OF_FOOD_LIBRARY)
                 Helpers.Settings.StageSettings = GlobalVariables.STAGE_2;
         }
@@ -67,12 +67,12 @@ namespace SelfControl
                 answers.Add(questions.Key, -1);
             }
             item.ANSWERS = GlobalVariables.SerializeDictionary(answers);
-            if (GlobalVariables.cm != null)
+            if (GlobalVariables.foodItemsDatabse != null)
             {
-                int i = await GlobalVariables.cm.SaveItemAsync(item);
+                int i = await GlobalVariables.foodItemsDatabse.SaveItemAsync(item);
                 if(i == 1)
                 {
-                    List<FoodItem> food = await GlobalVariables.cm.QueryIdByDate(mDateTime);
+                    List<FoodItem> food = await GlobalVariables.foodItemsDatabse.QueryIdByDate(mDateTime);
                     int id = food.First().ID;
                     await Navigation.PushAsync(new EditDetailsPage(id, GlobalVariables.EntryType.NEW_ENTRY));
                     if(Settings.StageSettings == GlobalVariables.STAGE_1)

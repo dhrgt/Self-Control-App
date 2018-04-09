@@ -14,7 +14,8 @@ namespace SelfControl
 	{
 		public Page1 ()
 		{
-			InitializeComponent ();
+            NavigationPage.SetHasNavigationBar(this, false);
+            InitializeComponent ();
 		}
 	}
 }

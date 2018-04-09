@@ -28,7 +28,8 @@ namespace SelfControl.Helpers
 
         private static List<FoodItem> FoodItems = new List<FoodItem>();
 
-        public static ConnectionManager cm = new ConnectionManager(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
+        public static FoodItemsDatabse foodItemsDatabse = new FoodItemsDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
+        public static DailyReviewDatabase dailyReviewDatabase = new DailyReviewDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
 
         public enum AspectRatio
         {
@@ -55,6 +56,17 @@ namespace SelfControl.Helpers
             { 0, "How frequently do you eat this?" },
             { 1, "How much do you plan to eat this in the future?" },
             { 2, "How healthy do you think this food is?" }
+        };
+
+        public static Dictionary<int, string> DailyReviewQuestions = new Dictionary<int, string>()
+        {
+            { 0, "Q1" },
+            { 1, "Q2" },
+            { 2, "Q3" },
+            { 3, "Q4" },
+            { 4, "Q5" },
+            { 5, "Q6" },
+            { 6, "Q7" },
         };
 
         public static string[] FrequencyResult =
@@ -160,7 +172,7 @@ namespace SelfControl.Helpers
 
         async public static void UpdateDateDiary(int id)
         {
-            List<FoodItem> foods = await cm.QueryById(id);
+            List<FoodItem> foods = await foodItemsDatabse.QueryById(id);
             FoodItem food = foods.First();
             DateTime date = food.DATE;
             if (dateDiary.ContainsKey(date.Date))
@@ -192,7 +204,7 @@ namespace SelfControl.Helpers
         {
             dateDiary.Clear();
             FoodItems.Clear();
-            List<FoodItem> foods = await cm.QueryByDateTime();
+            List<FoodItem> foods = await foodItemsDatabse.QueryByDateTime();
             FoodItems = foods;
             foreach (var food in foods)
             {

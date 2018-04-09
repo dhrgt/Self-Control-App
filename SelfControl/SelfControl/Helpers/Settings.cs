@@ -27,6 +27,12 @@ namespace SelfControl.Helpers
         private const string RandomCriteriaSetting = "random_criteria_setting";
         private static readonly int RandomCriteriaSettingDefault = (int)GlobalVariables.RandomCriteria.Random;
 
+        private const string LastDailyReviewSetting = "last_daily_review_setting";
+        private static readonly System.DateTime LastDailyReviewSettingDefault = System.DateTime.Now;
+
+        private const string FirstDailyReviewSetting = "first_daily_review_setting";
+        private static readonly bool FirstDailyReviewSettingDefault = false;
+
         #endregion
 
 
@@ -75,6 +81,30 @@ namespace SelfControl.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(RandomCriteriaSetting, value);
+            }
+        }
+
+        public static System.DateTime LastDailyReviewValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(LastDailyReviewSetting, LastDailyReviewSettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(LastDailyReviewSetting, value);
+            }
+        }
+
+        public static bool FirstDailyReviewValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(FirstDailyReviewSetting, FirstDailyReviewSettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(FirstDailyReviewSetting, value);
             }
         }
     }

@@ -27,14 +27,14 @@ namespace SelfControl.Helpers.Pages
 
         async private void UpdateTitle()
         {
-            List<FoodItem> Items = await GlobalVariables.cm.QueryById(getCurrentID());
+            List<FoodItem> Items = await GlobalVariables.foodItemsDatabse.QueryById(getCurrentID());
             FoodItem foodItem = Items.First();
             Title = foodItem.NAME;
         }
 
         async private void UpdateStats()
         {
-            List<FoodItem> Items = await GlobalVariables.cm.QueryById(getCurrentID());
+            List<FoodItem> Items = await GlobalVariables.foodItemsDatabse.QueryById(getCurrentID());
             FoodItem foodItem = Items.First();
             Dictionary<int, int> dictionary = GlobalVariables.DeserializeDictionary(foodItem.ANSWERS);
             frequencyRating.Text = textToRating(dictionary[1]);

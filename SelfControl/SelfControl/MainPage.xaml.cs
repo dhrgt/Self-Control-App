@@ -71,6 +71,10 @@ namespace SelfControl
             stack.Children.Add(galleryButton);
             if(Helpers.Settings.StageSettings == Helpers.GlobalVariables.STAGE_2)
             {
+                if (!Settings.FirstDailyReviewValue)
+                {
+                    Settings.LastDailyReviewValue = DateTime.Now.AddDays(-1);
+                }
                 stack.Children.Add(mealButton);
                 stack.Children.Add(reviewButton);
             }

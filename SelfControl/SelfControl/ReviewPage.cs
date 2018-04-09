@@ -6,11 +6,18 @@ namespace SelfControl
     {
         public ReviewPage()
         {
-            var navigationPage = new NavigationPage(new Page1());
-            navigationPage.Title = "Schedule";
+            var chartsPage = new NavigationPage(new Page1());
+            chartsPage.Title = "Charts";
 
-            Children.Add(new Page1());
-            Children.Add(navigationPage);
+            var dailyPage = new NavigationPage(new Helpers.Pages.DailyReviewPage());
+            dailyPage.Title = "Daily";
+
+            var weeklyPage = new NavigationPage(new Page1());
+            weeklyPage.Title = "Weekly";
+
+            Children.Add(chartsPage);
+            Children.Add(dailyPage);
+            Children.Add(weeklyPage);
         }
     }
 }
