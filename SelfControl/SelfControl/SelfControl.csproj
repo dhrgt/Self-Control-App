@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Media\trash_button.png" />
+    <None Remove="Resources\back.png" />
     <None Remove="Resources\bin_icon.png" />
     <None Remove="Resources\blank.jpg" />
     <None Remove="Resources\fire_button.png" />
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Media\trash_button.png" />
+    <EmbeddedResource Include="Resources\back.png" />
     <EmbeddedResource Include="Resources\bin_icon.png" />
     <EmbeddedResource Include="Resources\blank.jpg" />
     <EmbeddedResource Include="Resources\fire_button.png" />
@@ -68,6 +70,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Helpers\Pages\PracticeViewer.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Helpers\Pages\SelectDailyReviewDay.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Helpers\Pages\WeeklyReviewPage.xaml">

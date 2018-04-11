@@ -10,10 +10,14 @@ namespace SelfControl.Models
     {
         static string DATETIME_COL = "_date";
         static string ID_COL = "_id";
+        static string DAY_COL = "_day";
+        static string ISCOMPLETED_COL = "_isCompleted";
         static string RESPONSE_COL = "_response";
 
         public static string dateTimeCol { get => DATETIME_COL; }
         public static string idCol { get => ID_COL; }
+        public static string dayCol { get => DAY_COL; }
+        public static string isCompletedCol { get => ISCOMPLETED_COL; }
         public static string responseCol { get => RESPONSE_COL; }
 
         [PrimaryKey, AutoIncrement, Column("_id")]
@@ -22,5 +26,9 @@ namespace SelfControl.Models
         public DateTime DATE { get; set; }
         [Column("_response")]
         public string RESPONSE { get; set; }
+        [Column("_day")]
+        public int DAY { get; set; }
+        [Column("_isCompleted")]
+        public bool ISCOMPLETED { get; set; }
     }
 }

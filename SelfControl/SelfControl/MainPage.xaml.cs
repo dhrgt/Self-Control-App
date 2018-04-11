@@ -17,6 +17,8 @@ namespace SelfControl
             GlobalVariables.UpdateDateDiary();
             InitializeComponent();
 
+            Task.Run(() => SetDailyReviews());
+
             var title = new Label
             {
                 Text = "Self Control",
@@ -74,6 +76,7 @@ namespace SelfControl
                 if (!Settings.FirstDailyReviewValue)
                 {
                     Settings.LastDailyReviewValue = DateTime.Now.AddDays(-1);
+                    Settings.FirstDailyReviewValue = true;
                 }
                 stack.Children.Add(mealButton);
                 stack.Children.Add(reviewButton);
@@ -97,6 +100,25 @@ namespace SelfControl
                     info
                 }
             };
+        }
+
+        private void SetDailyReviews()
+        {
+            DateTime CurrentTime = DateTime.Now;
+            DateTime LastUpdated = Settings.LastDailyReviewValue;
+
+            Models.DailyReviewTable dailyReviewEntry;
+
+            for(int i = 0; i < CurrentTime.Day - LastUpdated.Day; i++)
+            {
+                Settings.DailyReviewDayValue++;
+                dailyReviewEntry = new Models.DailyReviewTable();
+                dailyReviewEntry.DAY = Settings.DailyReviewDayValue;
+                dailyReviewEntry.ISCOMPLETED = false;
+                GlobalVariables.dailyReviewDatabase.SaveItemAsync(dailyReviewEntry);
+            }
+
+            Settings.LastDailyReviewValue = CurrentTime;
         }
         
         async void OnCameraButtonClicked(object sender, EventArgs e)

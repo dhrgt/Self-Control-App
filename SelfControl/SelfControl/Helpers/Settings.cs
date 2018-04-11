@@ -33,6 +33,9 @@ namespace SelfControl.Helpers
         private const string FirstDailyReviewSetting = "first_daily_review_setting";
         private static readonly bool FirstDailyReviewSettingDefault = false;
 
+        private const string DailyReviewDaySetting = "daily_review_day_setting";
+        private static readonly int DailyReviewDaySettingDefault = 0;
+
         #endregion
 
 
@@ -105,6 +108,18 @@ namespace SelfControl.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(FirstDailyReviewSetting, value);
+            }
+        }
+
+        public static int DailyReviewDayValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(DailyReviewDaySetting, DailyReviewDaySettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(DailyReviewDaySetting, value);
             }
         }
     }
