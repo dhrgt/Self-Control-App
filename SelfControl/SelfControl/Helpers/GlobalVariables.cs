@@ -30,6 +30,7 @@ namespace SelfControl.Helpers
 
         public static FoodItemsDatabse foodItemsDatabse = new FoodItemsDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
         public static DailyReviewDatabase dailyReviewDatabase = new DailyReviewDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
+        public static WeeklyReviewDatabse weeklyReviewDatabse = new WeeklyReviewDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
 
         public enum AspectRatio
         {

@@ -13,89 +13,88 @@ namespace SelfControl.Helpers.Pages
 	public partial class DailyReviewPage : ContentPage
 	{
         private Dictionary<int, CustomRadioGroup> radioGroups;
-        Label label;
-        Button button;
         AbsoluteLayout absoluteLayout;
-        public Models.DailyReviewTable selected = null;
         AbsoluteLayout view;
-        Button previousDaysButton;
+        List<Models.DailyReviewTable> list;
+        int CompletedDays;
+        ReviewSelectionButton selected;
+        Label label;
 
         public DailyReviewPage()
 		{
-            if (selected == null)
+            CompletedDays = 0;
+            view = new AbsoluteLayout();
+            absoluteLayout = new AbsoluteLayout();
+            Task.Run(async () =>
             {
-                Task.Run(async () =>
+                list = await GlobalVariables.dailyReviewDatabase.QueryByDateTime();
+                Grid grid = new Grid
                 {
-                    List<Models.DailyReviewTable> list = await GlobalVariables.dailyReviewDatabase.QueryByDateTime();
-                    selected = list.Last();
-                    button = new Button
+                    ColumnDefinitions =
                     {
-                        Text = "Start Review for Day " + selected.DAY,
+                        new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                        new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                        new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
+                    },
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.Start,
+                    Margin = 5
+                };
+                AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
+                AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(0, 0, 1, 0.9));
+                int colNum = 0;
+                int rowNum = 0;
+                foreach (var i in list)
+                {
+                    ReviewSelectionButton button = new ReviewSelectionButton
+                    {
+                        Text = i.DATECREATED.ToLongDateString(),
+                        VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
+                        HeightRequest = 100,
+                        WidthRequest = 100,
+                        DatabaseItem = i
                     };
                     button.Clicked += OnStartDailyReview;
-                    AbsoluteLayout.SetLayoutFlags(button, AbsoluteLayoutFlags.All);
-                    AbsoluteLayout.SetLayoutBounds(button, new Rectangle(0, 0, 1, 0.9));
-
-                    label = new Label
+                    if (i.ISCOMPLETED)
                     {
-                        Text = "Reveiw Completed for Day " + selected.DAY,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
-                    };
-                    AbsoluteLayout.SetLayoutFlags(label, AbsoluteLayoutFlags.All);
-                    AbsoluteLayout.SetLayoutBounds(label, new Rectangle(0, 0, 1, 0.9));
+                        button.IsEnabled = false;
+                        CompletedDays++;
+                    }
+                    
+                    if (colNum == 3)
+                    { 
+                        rowNum++;
+                        colNum = 0;
+                    }
+                    grid.Children.Add(button, colNum, rowNum);
+                    colNum++;
+                }
 
-                    UpdateSelected();
-                });
-            }
+                label = new Label
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Start,
+                    Margin = 5,
+                    Text = "Completed Days: " + CompletedDays
+                };
+                AbsoluteLayout.SetLayoutFlags(label, AbsoluteLayoutFlags.All);
+                AbsoluteLayout.SetLayoutBounds(label, new Rectangle(1, 1, 1, 0.1));
+
+                view.Children.Add(grid);
+                view.Children.Add(label);
+                setView(view);
+            });
             NavigationPage.SetHasNavigationBar(this, false);
 
 			InitializeComponent ();
-
-            absoluteLayout = new AbsoluteLayout();
-
-            view = new AbsoluteLayout();
-
-            previousDaysButton = new Button
-            {
-                Text = "Previous Days",
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
-            previousDaysButton.Clicked += NavigateToSelectDay;
-
-            AbsoluteLayout.SetLayoutFlags(previousDaysButton, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(previousDaysButton, new Rectangle(1, 1, 1, 0.1));
-
+            
             this.Content = absoluteLayout;
 		}
 
-        async private void NavigateToSelectDay(object sender, EventArgs e)
-        {
-            await Navigation.PushModalAsync(new SelectDailyReviewDay(this), true);
-        }
-
-        public void UpdateSelected()
-        {
-            if (!selected.ISCOMPLETED)
-            {
-                view.Children.Clear();
-                view.Children.Add(button);
-            }
-            else
-            {
-                view.Children.Clear();
-                view.Children.Add(label);
-            }
-
-            view.Children.Add(previousDaysButton);
-            setView(view);
-        }
-
         private void OnStartDailyReview(object sender, EventArgs e)
         {
+            selected = (ReviewSelectionButton)sender;
             radioGroups = new Dictionary<int, CustomRadioGroup>();
             List<CustomRadioButton> list = new List<CustomRadioButton>();
 
@@ -181,7 +180,7 @@ namespace SelfControl.Helpers.Pages
 
         private void OnCancelClicked(object sender, EventArgs e)
         {
-            setView(button);
+            setView(view);
         }
 
         private async void OnDoneClickedAsync(object sender, EventArgs e)
@@ -202,20 +201,19 @@ namespace SelfControl.Helpers.Pages
             }
             else
             {
-                selected.DATE = DateTime.Now;
+                var databaseItem = (Models.DailyReviewTable)selected.DatabaseItem;
+                databaseItem.DATE = DateTime.Now;
                 Dictionary<int, int> dict = new Dictionary<int, int>(radioGroups.Count);
                 foreach (var rads in radioGroups)
                 {
                     dict[rads.Key] = rads.Value.SelectedIndex;
                 }
-                selected.RESPONSE = GlobalVariables.SerializeDictionary(dict);
-                selected.ISCOMPLETED = true;
-                await GlobalVariables.dailyReviewDatabase.SaveItemAsync(selected);
-                AbsoluteLayout.SetLayoutFlags(label, AbsoluteLayoutFlags.All);
-                AbsoluteLayout.SetLayoutBounds(label, new Rectangle(0, 0, 1, 0.9));
-                view.Children.Clear();
-                view.Children.Add(label);
-                view.Children.Add(previousDaysButton);
+                databaseItem.RESPONSE = GlobalVariables.SerializeDictionary(dict);
+                databaseItem.ISCOMPLETED = true;
+                await GlobalVariables.dailyReviewDatabase.SaveItemAsync(databaseItem);
+                selected.IsEnabled = false;
+                CompletedDays++;
+                label.Text = "Completed Days: " + CompletedDays;
                 setView(view);
             }
         }

@@ -9,13 +9,13 @@ namespace SelfControl.Helpers
     public class ReviewSelectionButton : Button
     {
         public static readonly BindableProperty ButtonIdProperty =
-        BindableProperty.Create("DataBaseItem", typeof(DailyReviewTable), typeof(ReviewSelectionButton), null, propertyChanged: (bindable, oldValue, newValue) =>
+        BindableProperty.Create("DataBaseItem", typeof(object), typeof(ReviewSelectionButton), null, propertyChanged: (bindable, oldValue, newValue) =>
         {
         });
 
-        public DailyReviewTable DatabaseItem
+        public object DatabaseItem
         {
-            get { return (DailyReviewTable)GetValue(ButtonIdProperty); }
+            get { return (object)GetValue(ButtonIdProperty); }
             set { SetValue(ButtonIdProperty, value); }
         }
     }

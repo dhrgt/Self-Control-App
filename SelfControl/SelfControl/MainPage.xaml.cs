@@ -18,6 +18,7 @@ namespace SelfControl
             InitializeComponent();
 
             Task.Run(() => SetDailyReviews());
+            Task.Run(() => SetWeeklyReviews());
 
             var title = new Label
             {
@@ -76,6 +77,7 @@ namespace SelfControl
                 if (!Settings.FirstDailyReviewValue)
                 {
                     Settings.LastDailyReviewValue = DateTime.Now.AddDays(-1);
+                    Settings.LastWeeklyReviewValue = DateTime.Now;
                     Settings.FirstDailyReviewValue = true;
                 }
                 stack.Children.Add(mealButton);
@@ -108,19 +110,39 @@ namespace SelfControl
             DateTime LastUpdated = Settings.LastDailyReviewValue;
 
             Models.DailyReviewTable dailyReviewEntry;
-
+            DateTime creationDate = LastUpdated;
             for(int i = 0; i < CurrentTime.Day - LastUpdated.Day; i++)
             {
                 Settings.DailyReviewDayValue++;
+                creationDate.AddDays(1);
                 dailyReviewEntry = new Models.DailyReviewTable();
                 dailyReviewEntry.DAY = Settings.DailyReviewDayValue;
+                dailyReviewEntry.DATECREATED = creationDate;
                 dailyReviewEntry.ISCOMPLETED = false;
                 GlobalVariables.dailyReviewDatabase.SaveItemAsync(dailyReviewEntry);
             }
 
             Settings.LastDailyReviewValue = CurrentTime;
         }
-        
+
+        private void SetWeeklyReviews()
+        {
+            DateTime CurrentTime = DateTime.Now;
+            DateTime LastUpdated = Settings.LastWeeklyReviewValue;
+
+            Models.WeeklyReviewTable weeklyReviewEntry;
+            for (int i = 6; i < CurrentTime.Day - LastUpdated.Day; i+=7)
+            {
+                Settings.WeeklyReviewDayValue++;
+                weeklyReviewEntry = new Models.WeeklyReviewTable();
+                weeklyReviewEntry.WEEK = Settings.WeeklyReviewDayValue;
+                weeklyReviewEntry.ISCOMPLETED = false;
+                GlobalVariables.weeklyReviewDatabse.SaveItemAsync(weeklyReviewEntry);
+            }
+
+            Settings.LastDailyReviewValue = CurrentTime;
+        }
+
         async void OnCameraButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new CameraPage(), true);

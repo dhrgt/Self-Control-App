@@ -10,21 +10,25 @@ namespace SelfControl.Models
     {
         static string DATETIME_COL = "_date";
         static string ID_COL = "_id";
-        static string PIC_ID = "_picId";
         static string RESPONSE_COL = "_response";
+        static string WEEK_COL = "_week";
+        static string ISCOMPLETED_COL = "_isCompleted";
 
         public static string dateTimeCol { get => DATETIME_COL; }
         public static string idCol { get => ID_COL; }
-        public static string picIdCol { get => PIC_ID; }
         public static string responseCol { get => RESPONSE_COL; }
+        public static string weekCol { get => WEEK_COL; }
+        public static string isCompletedCol { get => ISCOMPLETED_COL; }
 
         [Column("_id")]
         public int ID { get; set; }
-        [Column("_picId")]
-        public int PICID { get; set; }
         [Column("_date")]
         public DateTime DATE { get; set; }
         [Column("_response")]
         public string RESPONSE { get; set; }
+        [Column("_week")]
+        public int WEEK { get; set; }
+        [Column("_isCompleted")]
+        public bool ISCOMPLETED { get; set; }
     }
 }

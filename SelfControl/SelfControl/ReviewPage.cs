@@ -12,7 +12,7 @@ namespace SelfControl
             var dailyPage = new NavigationPage(new Helpers.Pages.DailyReviewPage());
             dailyPage.Title = "Daily";
 
-            var weeklyPage = new NavigationPage(new Page1());
+            var weeklyPage = new NavigationPage(new Helpers.Pages.WeeklyReviewPage());
             weeklyPage.Title = "Weekly";
 
             Children.Add(chartsPage);

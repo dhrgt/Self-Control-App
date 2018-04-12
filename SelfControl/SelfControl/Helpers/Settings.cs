@@ -36,6 +36,12 @@ namespace SelfControl.Helpers
         private const string DailyReviewDaySetting = "daily_review_day_setting";
         private static readonly int DailyReviewDaySettingDefault = 0;
 
+        private const string LastWeeklyReviewSetting = "last_weekly_review_setting";
+        private static readonly System.DateTime LastWeeklyReviewSettingDefault = System.DateTime.Now;
+
+        private const string WeeklyReviewDaySetting = "weekly_review_day_setting";
+        private static readonly int WeeklyReviewDaySettingDefault = 0;
+
         #endregion
 
 
@@ -120,6 +126,30 @@ namespace SelfControl.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(DailyReviewDaySetting, value);
+            }
+        }
+
+        public static System.DateTime LastWeeklyReviewValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(LastWeeklyReviewSetting, LastWeeklyReviewSettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(LastWeeklyReviewSetting, value);
+            }
+        }
+
+        public static int WeeklyReviewDayValue
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(WeeklyReviewDaySetting, WeeklyReviewDaySettingDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(WeeklyReviewDaySetting, value);
             }
         }
     }

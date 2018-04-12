@@ -27,5 +27,11 @@ namespace SelfControl.DatabaseManager
         {
             return database.DeleteAsync(item);
         }
+
+        async public Task<List<WeeklyReviewTable>> QueryByDateTime()
+        {
+            var query = await database.QueryAsync<WeeklyReviewTable>("SELECT * FROM WeeklyReview ORDER BY ?", WeeklyReviewTable.dateTimeCol);
+            return query;
+        }
     }
 }
