@@ -17,9 +17,6 @@ namespace SelfControl
             GlobalVariables.UpdateDateDiary();
             InitializeComponent();
 
-            Task.Run(() => SetDailyReviews());
-            Task.Run(() => SetWeeklyReviews());
-
             var title = new Label
             {
                 Text = "Self Control",
@@ -84,7 +81,13 @@ namespace SelfControl
                 stack.Children.Add(reviewButton);
             }
 
-            var info = new Label
+            if (Settings.FirstDailyReviewValue)
+            {
+                Task.Run(() => SetDailyReviews());
+                Task.Run(() => SetWeeklyReviews());
+            }
+
+                var info = new Label
             {
                 Text = "This is the General Purpose of the App...",
                 FontSize = 10,
@@ -140,7 +143,7 @@ namespace SelfControl
                 GlobalVariables.weeklyReviewDatabse.SaveItemAsync(weeklyReviewEntry);
             }
 
-            Settings.LastDailyReviewValue = CurrentTime;
+            Settings.LastWeeklyReviewValue = CurrentTime;
         }
 
         async void OnCameraButtonClicked(object sender, EventArgs e)

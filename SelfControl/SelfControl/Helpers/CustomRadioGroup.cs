@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace SelfControl.Helpers
 {
-    class CustomRadioGroup : StackLayout
+    public class CustomRadioGroup : StackLayout
     {
         public List<CustomRadioButton> rads;
 

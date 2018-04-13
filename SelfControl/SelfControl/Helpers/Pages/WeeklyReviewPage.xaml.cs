@@ -97,6 +97,12 @@ namespace SelfControl.Helpers.Pages
             
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Navigation.PushModalAsync(new WeeklyReviewViewer());
+        }
+
         private void setView(View view)
         {
             Device.BeginInvokeOnMainThread(() =>
