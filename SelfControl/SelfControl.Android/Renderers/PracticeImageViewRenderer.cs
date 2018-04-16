@@ -78,6 +78,11 @@ namespace SelfControl.Droid.Renderers
             saturation = (float)animation.AnimatedValue;
             ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
             mImage.SetColorFilter(filter);
+            if ((float)animation.AnimatedValue > 0.4)
+            {
+                Control.ScaleX = (float)animation.AnimatedValue;
+                Control.ScaleY = (float)animation.AnimatedValue;
+            }
             Control.SetImageDrawable(mImage);
         }
 

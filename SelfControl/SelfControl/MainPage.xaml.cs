@@ -117,7 +117,7 @@ namespace SelfControl
             for(int i = 0; i < CurrentTime.Day - LastUpdated.Day; i++)
             {
                 Settings.DailyReviewDayValue++;
-                creationDate.AddDays(1);
+                creationDate = creationDate.AddDays(1);
                 dailyReviewEntry = new Models.DailyReviewTable();
                 dailyReviewEntry.DAY = Settings.DailyReviewDayValue;
                 dailyReviewEntry.DATECREATED = creationDate;
@@ -125,7 +125,7 @@ namespace SelfControl
                 GlobalVariables.dailyReviewDatabase.SaveItemAsync(dailyReviewEntry);
             }
 
-            Settings.LastDailyReviewValue = CurrentTime;
+            Settings.LastDailyReviewValue = DateTime.Now;
         }
 
         private void SetWeeklyReviews()
