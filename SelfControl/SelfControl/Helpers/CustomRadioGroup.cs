@@ -99,10 +99,17 @@ namespace SelfControl.Helpers
 
         private static void OnSelectedIndexChanged(BindableObject bindable, int oldvalue, int newvalue)
         {
-            if (newvalue == -1) return;
-
             var bindableRadioGroup = bindable as CustomRadioGroup;
-            
+
+            if (newvalue == -1)
+            {
+                foreach (var rad in bindableRadioGroup.rads)
+                {
+                    rad.Checked = false;
+                }
+                return;
+            }
+
             foreach (var rad in bindableRadioGroup.rads)
             {
                 if (rad.Id == bindableRadioGroup.SelectedIndex)

@@ -92,15 +92,29 @@ namespace SelfControl.Helpers.Pages
             this.Content = absoluteLayout;
         }
 
-        private void OnStartWeeklyReview(object sender, EventArgs e)
+        async internal void SaveWeeklyReview(Dictionary<int, Dictionary<int, int>> responses)
         {
-            
+            var databaseItem = (Models.WeeklyReviewTable)selected.DatabaseItem;
+            databaseItem.DATE = DateTime.Now;
+            databaseItem.ISCOMPLETED = true;
+            Dictionary<int, string> temp = new Dictionary<int, string>(responses.Count);
+            foreach(var i in responses)
+            {
+                string h = GlobalVariables.SerializeDictionary<int, int>(i.Value);
+                temp.Add(i.Key, h);
+            }
+            databaseItem.RESPONSE = GlobalVariables.SerializeDictionary<int, string>(temp);
+            selected.IsEnabled = false;
+            await GlobalVariables.weeklyReviewDatabse.UpdateItemAsync(databaseItem);
+            CompletedWeeks++;
+            label.Text = "Completed Weeks: " + CompletedWeeks;
+            setView(view);
         }
 
-        protected override void OnAppearing()
+        private void OnStartWeeklyReview(object sender, EventArgs e)
         {
-            base.OnAppearing();
-            Navigation.PushModalAsync(new WeeklyReviewViewer());
+            selected = (ReviewSelectionButton)sender;
+            Navigation.PushModalAsync(new WeeklyReviewViewer(this));
         }
 
         private void setView(View view)

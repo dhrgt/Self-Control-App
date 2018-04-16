@@ -20,7 +20,8 @@ namespace SelfControl.Helpers.Pages
         public Dictionary<int, Dictionary<int, int>> responses;
         int _currentIndex;
         AbsoluteLayout fullView;
-
+        Button next;
+        private WeeklyReviewPage parent;
         public static readonly BindableProperty CurrentIndexProperty =
         BindableProperty.Create("CurrentIndex", typeof(int), typeof(WeeklyReviewViewer), -1, propertyChanged: (bindable, oldValue, newValue) =>
         {
@@ -34,12 +35,29 @@ namespace SelfControl.Helpers.Pages
             set
             {
                 _currentIndex = value;
-                if (_currentIndex == list.Count - 1) Navigation.PopModalAsync();
+                for (int i = 0; i < radioGroups.Count; i++)
+                {
+                    radioGroups[i].SelectedIndex = -1;
+                }
+                if (_currentIndex == list.Count - 1)
+                {
+                    next.Text = "Done";
+                }
+                else
+                {
+                    next.Text = "Next";
+                }
+                if (_currentIndex == list.Count)
+                {
+                    parent.SaveWeeklyReview(responses);
+                    Navigation.PopModalAsync();
+                }
             }
         }
 
-        public WeeklyReviewViewer ()
+        public WeeklyReviewViewer(WeeklyReviewPage parent)
 		{
+            this.parent = parent;
             InitializeComponent ();
 
             carouselView = new PanCardView.CarouselView
@@ -105,7 +123,7 @@ namespace SelfControl.Helpers.Pages
                     AbsoluteLayout.SetLayoutFlags(questionsView, AbsoluteLayoutFlags.All);
                     AbsoluteLayout.SetLayoutBounds(questionsView, new Rectangle(1, 1, 1, 0.5));
 
-                    Button next = new Button
+                    next = new Button
                     {
                         Text = "Next",
                         VerticalOptions = LayoutOptions.Center,

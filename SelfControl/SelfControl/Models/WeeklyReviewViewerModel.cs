@@ -100,11 +100,6 @@ namespace SelfControl.Models
                     if (!_contextStack.Any() && _prevIndex >= 0) _contextStack.Push(CreateContext(_prevIndex));
                     PrevContext = _contextStack.Any() ? _contextStack.Peek() : null;
                 }
-                for (int i = 0; i < parent.radioGroups.Count; i++)
-                {
-                    parent.radioGroups[i].SelectedIndex = -1;
-                }
-                parent.UpdateView();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NextContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PrevContext)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentContext)));
