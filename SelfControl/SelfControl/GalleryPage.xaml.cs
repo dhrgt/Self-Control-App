@@ -19,6 +19,7 @@ namespace SelfControl
 	public partial class GalleryPage : ContentPage
 	{
         StackLayout view;
+        ScrollView scrollView;
         Dictionary<DateTime,List<FoodItem>> foodDiary;
         public GalleryMode mode = GalleryMode.Normal;
         public List<ImageDisplay> selectedItems;
@@ -34,6 +35,10 @@ namespace SelfControl
             deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
             
             view = new StackLayout();
+            scrollView = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical
+            };
             
             Task.Run(() =>
             {
@@ -161,7 +166,9 @@ namespace SelfControl
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                this.Content = view;
+                scrollView.ClearValue(ContentProperty);
+                scrollView.Content = view;
+                this.Content = scrollView;
             });
         }
 

@@ -83,6 +83,7 @@ namespace SelfControl
 
             if (Settings.FirstDailyReviewValue)
             {
+                Task.Run(() => new Helpers.DB3ToCSV());
                 Task.Run(() => SetDailyReviews());
                 Task.Run(() => SetWeeklyReviews());
             }

@@ -24,6 +24,12 @@ namespace SelfControl.Droid.Helpers
             return Path.Combine(path, filename);
         }
 
+        public string GetExternalFilePath(string filename)
+        {
+            string path = Android.OS.Environment.ExternalStorageDirectory.ToString();
+            return Path.Combine(path, filename);
+        }
+
         public bool deleteFile(string path)
         {
             Java.IO.File file = new Java.IO.File(path);
