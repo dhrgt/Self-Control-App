@@ -123,6 +123,12 @@ namespace SelfControl
                 dailyReviewEntry.DAY = Settings.DailyReviewDayValue;
                 dailyReviewEntry.DATECREATED = creationDate;
                 dailyReviewEntry.ISCOMPLETED = false;
+                Dictionary<int, int> dict = new Dictionary<int, int>(GlobalVariables.DailyReviewQuestions.Count);
+                foreach (var rads in GlobalVariables.DailyReviewQuestions)
+                {
+                    dict[rads.Key] = -1;
+                }
+                dailyReviewEntry.RESPONSE = GlobalVariables.SerializeDictionary(dict);
                 GlobalVariables.dailyReviewDatabase.SaveItemAsync(dailyReviewEntry);
             }
 

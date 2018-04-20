@@ -45,6 +45,9 @@ namespace SelfControl
             }
             else if (Settings.RandomCriteriaValue == (int)GlobalVariables.RandomCriteria.Health)
             {
+            //TODO: Change value of health from 0 to 4 to -2 to 2 
+            // Use Math.Abs(health - 5)
+            // Use Math.Pow(base, exponent)
                 int seed = 0;
                 List<int> intervals = new List<int>(FoodItems.Count);
                 for (int f = 0; f < FoodItems.Count; f++)
@@ -114,6 +117,7 @@ namespace SelfControl
                  },
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start
+                
             };
             SetView();
             Update();

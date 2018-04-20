@@ -47,9 +47,7 @@ namespace SelfControl.Helpers
                 StringBuilder ans = new StringBuilder();
                 foreach(var a in answers)
                 {
-                    ans.Append(a.Key + " = " + a.Value);
-                    ans.AppendLine();
-                    ans.Append(" , , ,");
+                    ans.Append(a.Key + "," + a.Value + ",");
                 }
 
                 tableContent.Append(id + "," + dateTime + "," + name + "," + ans);
@@ -92,9 +90,7 @@ namespace SelfControl.Helpers
                 StringBuilder ans = new StringBuilder();
                 foreach (var a in responses)
                 {
-                    ans.Append(a.Key + " = " + a.Value);
-                    ans.AppendLine();
-                    ans.Append(" , , , , ,");
+                    ans.Append(a.Key + "," + a.Value + ",");
                 }
 
                 tableContent.Append(id + "," + dateCreated + "," + dateCompleted + "," + day + "," + isCompleted + "," + ans);
