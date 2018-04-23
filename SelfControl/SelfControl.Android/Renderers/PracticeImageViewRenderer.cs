@@ -25,18 +25,22 @@ namespace SelfControl.Droid.Renderers
         Drawable mImage;
         ColorMatrix matrix;
         float saturation;
+        float zoom;
         bool isHeating;
         bool isCooling;
-        ValueAnimator animation;
+        ValueAnimator animationSat;
+        ValueAnimator animationZoomIn;
 
         public PracticeImageViewRenderer(Context context) : base(context)
         {
             Console.WriteLine("new PracticeImageRenderer created" + System.Environment.NewLine);
             matrix = new ColorMatrix();
             saturation = 1f;
+            zoom = SelfControl.Helpers.GlobalVariables.StartingZoomValue;
             isHeating = false;
             isCooling = false;
-            animation = null;
+            animationSat = null;
+            animationZoomIn = null;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
@@ -50,10 +54,14 @@ namespace SelfControl.Droid.Renderers
         {
             if(mImage != null)
             {
-                animation = ValueAnimator.OfFloat(saturation, 2f);
-                animation.SetDuration(5000);
-                animation.AddUpdateListener(this);
-                animation.Start();
+                animationSat = ValueAnimator.OfFloat(saturation, 2f);
+                animationSat.SetDuration(5000);
+                animationSat.AddUpdateListener(this);
+                animationZoomIn = ValueAnimator.OfFloat(zoom, 2f);
+                animationZoomIn.SetDuration(5000);
+                animationZoomIn.AddUpdateListener(this);
+                if (SelfControl.Helpers.GlobalVariables.SaturationAnimation) { animationSat.Start(); }
+                if (SelfControl.Helpers.GlobalVariables.ZoomAnimation) { animationZoomIn.Start(); }
                 isHeating = true;
                 isCooling = false;
             }
@@ -63,10 +71,14 @@ namespace SelfControl.Droid.Renderers
         {
             if (mImage != null)
             {
-                animation = ValueAnimator.OfFloat(saturation, 0f);
-                animation.SetDuration(5000);
-                animation.AddUpdateListener(this);
-                animation.Start();
+                animationSat = ValueAnimator.OfFloat(saturation, 0f);
+                animationSat.SetDuration(5000);
+                animationSat.AddUpdateListener(this);
+                animationZoomIn = ValueAnimator.OfFloat(zoom, 1f);
+                animationZoomIn.SetDuration(5000);
+                animationZoomIn.AddUpdateListener(this);
+                if (SelfControl.Helpers.GlobalVariables.SaturationAnimation) { animationSat.Start(); }
+                if (SelfControl.Helpers.GlobalVariables.ZoomAnimation) { animationZoomIn.Start(); }
                 isCooling = true;
                 isHeating = false;
             }
@@ -74,14 +86,18 @@ namespace SelfControl.Droid.Renderers
 
         public void OnAnimationUpdate(ValueAnimator animation)
         {
-            matrix.SetSaturation((float)animation.AnimatedValue);
-            saturation = (float)animation.AnimatedValue;
-            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-            mImage.SetColorFilter(filter);
-            if ((float)animation.AnimatedValue > 0.4)
+            if(animation == animationSat)
+            {
+                matrix.SetSaturation((float)animation.AnimatedValue);
+                saturation = (float)animation.AnimatedValue;
+                ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                mImage.SetColorFilter(filter);
+            }
+            else if(animation == animationZoomIn)
             {
                 Control.ScaleX = (float)animation.AnimatedValue;
                 Control.ScaleY = (float)animation.AnimatedValue;
+                zoom = (float)animation.AnimatedValue;
             }
             Control.SetImageDrawable(mImage);
         }
@@ -100,7 +116,8 @@ namespace SelfControl.Droid.Renderers
                 if (bytes != null)
                 {
                     mImage = new BitmapDrawable(mActivity.Resources, BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length));
-                    
+                    Control.ScaleX = (float)image.Scale;
+                    Control.ScaleY = (float)image.Scale;
                     Control.SetImageDrawable(mImage);
                 }
             }
@@ -108,11 +125,14 @@ namespace SelfControl.Droid.Renderers
             if (increaseSaturation > 0 && !isHeating)
             {
                 Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
-                if (isCooling && animation != null)
+                if (isCooling && (animationSat != null || animationZoomIn != null))
                 {
-                    animation = null;
+                    animationSat = null;
+                    animationZoomIn = null;
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     mImage.SetColorFilter(filter);
+                    Control.ScaleX = (float)zoom;
+                    Control.ScaleY = (float)zoom;
                     Control.SetImageDrawable(mImage);
                 }
                 IncreaseSaturation();
@@ -120,25 +140,35 @@ namespace SelfControl.Droid.Renderers
             else if (increaseSaturation < 0 && !isCooling)
             {
                 Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
-                if (isHeating && animation != null)
+                if (isHeating && (animationSat != null || animationZoomIn != null))
                 {
-                    animation = null;
+                    animationSat = null;
+                    animationZoomIn = null;
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     mImage.SetColorFilter(filter);
+                    Control.ScaleX = (float)zoom;
+                    Control.ScaleY = (float)zoom;
                     Control.SetImageDrawable(mImage);
                 }
                 DecreaseSaturation();
             }
-            else if (animation != null)
+            else if (animationSat != null || animationZoomIn != null)
             {
                 if (increaseSaturation == 0)
                 {
-                    if (animation.IsStarted) animation.Pause();
+                    if (animationSat.IsStarted) animationSat.Pause();
+                    if (animationZoomIn.IsStarted) animationZoomIn.Pause();
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     mImage.SetColorFilter(filter);
+                    Control.ScaleX = (float)zoom;
+                    Control.ScaleY = (float)zoom;
                     Control.SetImageDrawable(mImage);
                 }
-                else if ((increaseSaturation > 0 || increaseSaturation < 0) && animation.IsPaused) animation.Resume();
+                else if (increaseSaturation > 0 || increaseSaturation < 0)
+                {
+                    if(SelfControl.Helpers.GlobalVariables.SaturationAnimation && animationSat.IsPaused) animationSat.Resume();
+                    if(SelfControl.Helpers.GlobalVariables.ZoomAnimation && animationZoomIn.IsPaused) animationZoomIn.Resume();
+                }
             }
         }
     }

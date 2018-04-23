@@ -118,7 +118,7 @@ namespace SelfControl.Helpers.Pages
                 Margin = 10
             };
             AbsoluteLayout.SetLayoutFlags(UserPrefs, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(UserPrefs, new Rectangle(1,1,1,0.1));
+            AbsoluteLayout.SetLayoutBounds(UserPrefs, new Rectangle(1,1,1,0.11));
             StackLayout prefsView = new StackLayout();
             AbsoluteLayout.SetLayoutFlags(prefsView, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(prefsView, new Rectangle(1, 1, 1, 1));

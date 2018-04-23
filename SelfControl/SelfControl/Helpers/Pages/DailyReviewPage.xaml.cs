@@ -37,7 +37,7 @@ namespace SelfControl.Helpers.Pages
                         new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
                     },
                     VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.Center,
                     Margin = 5
                 };
                 AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);

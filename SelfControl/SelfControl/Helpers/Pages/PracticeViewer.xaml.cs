@@ -35,7 +35,14 @@ namespace SelfControl.Helpers.Pages
             set
             {
                 _currentIndex = value;
-                if (_currentIndex == list.Count-1) Navigation.PopToRootAsync();
+                if (_currentIndex == list.Count - 1)
+                {
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(2000);
+                        Device.BeginInvokeOnMainThread(() => Navigation.PopToRootAsync());
+                    });
+                }
             }
         }
 

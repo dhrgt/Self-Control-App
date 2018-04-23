@@ -24,6 +24,7 @@ namespace SelfControl.Models
             var image = new PracticeImageView
             {
                 Aspect = Aspect.AspectFit,
+                Scale = GlobalVariables.StartingZoomValue
             };
             
             image.SetBinding(PracticeImageView.ImageByteProperty, "ByteSource");

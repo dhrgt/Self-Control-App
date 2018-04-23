@@ -24,6 +24,11 @@ namespace SelfControl.Helpers
 
         public const string DATABASE_NAME = "foodDB.db3";
 
+        public const bool SaturationAnimation = true;
+        public const bool ZoomAnimation = true;
+
+        public const float StartingZoomValue = 1.2f;
+
         private static Dictionary<DateTime, List<FoodItem>> dateDiary = new Dictionary<DateTime, List<FoodItem>>();
 
         private static List<FoodItem> FoodItems = new List<FoodItem>();

@@ -69,6 +69,7 @@ namespace SelfControl
                     {
                         new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
                         new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                        new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
                         new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
                     },
                     VerticalOptions = LayoutOptions.Start,
@@ -83,8 +84,10 @@ namespace SelfControl
                         ImageDisplay bmp = new ImageDisplay
                         {
                             ImageByte = thumbnail,
+                            BackgroundColor = Color.White,
                             WidthRequest = App.ScreenWidth / 4,
                             HeightRequest = App.ScreenWidth / 4,
+                            Margin = new Thickness(0,0,0,0),
                             Aspect = Aspect.AspectFill,
                             DatabaseItem = food
                         };
@@ -178,7 +181,7 @@ namespace SelfControl
             int rowNum = 0;
             foreach (var bmp in images)
             {
-                if (colNum == 3)
+                if (colNum == 4)
                 {
                     rowNum++;
                     colNum = 0;

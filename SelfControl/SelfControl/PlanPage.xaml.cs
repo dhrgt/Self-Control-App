@@ -113,6 +113,7 @@ namespace SelfControl
                 {
                     new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
                     new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
                     new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
                  },
                 VerticalOptions = LayoutOptions.Start,
@@ -180,7 +181,7 @@ namespace SelfControl
                         }
                     });
                     
-                    if (colNum == 3)
+                    if (colNum == 4)
                     {
                         rowNum++;
                         colNum = 0;
