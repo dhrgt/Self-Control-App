@@ -88,8 +88,14 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Helpers\FileHelperIOS.cs" />
+    <Compile Include="Helpers\GlobalHelpers.cs" />
+    <Compile Include="Helpers\RadioButtonView.cs" />
+    <Compile Include="Helpers\ResizeImageIOS.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Renderers\CustomRadioButtonRenderer.cs" />
+    <Compile Include="Renderers\ImageDisplayRenderer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
