@@ -6,6 +6,7 @@ namespace SelfControl
     {
         public ReviewPage()
         {
+            Title = "Review";
             var chartsPage = new NavigationPage(new Page1());
             chartsPage.Title = "Charts";
 
