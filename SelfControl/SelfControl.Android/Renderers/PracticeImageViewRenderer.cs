@@ -139,7 +139,7 @@ namespace SelfControl.Droid.Renderers
             }
             else if (increaseSaturation < 0 && !isCooling)
             {
-                Console.WriteLine("IncreseSaturation" + System.Environment.NewLine);
+                Console.WriteLine("DecreseSaturation" + System.Environment.NewLine);
                 if (isHeating && (animationSat != null || animationZoomIn != null))
                 {
                     animationSat = null;

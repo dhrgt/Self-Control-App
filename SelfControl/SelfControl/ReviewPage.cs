@@ -7,8 +7,8 @@ namespace SelfControl
         public ReviewPage()
         {
             Title = "Review";
-            var chartsPage = new NavigationPage(new Page1());
-            chartsPage.Title = "Charts";
+            //var chartsPage = new NavigationPage(new Page1());
+            //chartsPage.Title = "Charts";
 
             var dailyPage = new NavigationPage(new Helpers.Pages.DailyReviewPage());
             dailyPage.Title = "Daily";
@@ -16,7 +16,7 @@ namespace SelfControl
             var weeklyPage = new NavigationPage(new Helpers.Pages.WeeklyReviewPage());
             weeklyPage.Title = "Weekly";
 
-            Children.Add(chartsPage);
+            //Children.Add(chartsPage);
             Children.Add(dailyPage);
             Children.Add(weeklyPage);
         }

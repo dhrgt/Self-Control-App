@@ -30,6 +30,10 @@ namespace SelfControl.Helpers
                 FoodItem.dateTimeCol + "," +
                 FoodItem.nameCol + "," +
                 FoodItem.answersCol);
+            for(int i = 0; i < GlobalVariables.Questions.Count; i++)
+            {
+                tableContent.Append("," + "Question " + i+1 + "," + "Answer " + i+1);
+            }
             tableContent.AppendLine();
 
             int id = -1;
@@ -69,6 +73,11 @@ namespace SelfControl.Helpers
                 DailyReviewTable.dayCol + "," +
                 DailyReviewTable.isCompletedCol + "," +
                 DailyReviewTable.responseCol);
+
+            for (int i = 0; i < GlobalVariables.DailyReviewQuestions.Count; i++)
+            {
+                tableContent.Append("," + "Question " + i + 1 + "," + "Answer " + i + 1);
+            }
             tableContent.AppendLine();
 
             int id = -1;

@@ -98,6 +98,7 @@
     <Compile Include="Renderers\CustomRadioButtonRenderer.cs" />
     <Compile Include="Renderers\ImageDisplayRenderer.cs" />
     <Compile Include="Renderers\PracticeButtonsRenderer.cs" />
+    <Compile Include="Renderers\PracticeImageViewRenderer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />

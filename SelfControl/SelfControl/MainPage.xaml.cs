@@ -150,7 +150,8 @@ namespace SelfControl
                 GlobalVariables.weeklyReviewDatabse.SaveItemAsync(weeklyReviewEntry);
             }
 
-            Settings.LastWeeklyReviewValue = CurrentTime;
+            if(CurrentTime.Day - LastUpdated.Day > 7)
+                Settings.LastWeeklyReviewValue = CurrentTime;
         }
 
         async void OnCameraButtonClicked(object sender, EventArgs e)
