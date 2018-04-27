@@ -18,7 +18,7 @@ namespace SelfControl.Helpers
         /// The default text property.
         /// </summary>
         public static readonly BindableProperty TextProperty =
-            BindableProperty.Create("Text", typeof(string), typeof(CustomRadioButton), default(string), propertyChanged: (bindable, oldValue, newValue) =>
+            BindableProperty.Create("Text", typeof(string), typeof(CustomRadioButton), "", propertyChanged: (bindable, oldValue, newValue) =>
             {
                 CustomRadioButton r = (CustomRadioButton)bindable;
                 r.Text = (string)newValue;

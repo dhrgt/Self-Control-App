@@ -50,6 +50,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignProvision>iOS Team Provisioning Profile: com.yourcompany.SelfControl</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -133,7 +134,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\SelfControl\SelfControl.csproj">
-      <Project>{70ED72D6-3F88-4D53-B62C-F66DC97C6058}</Project>
+      <Project>{21612DA4-92B8-43F5-B950-BBC5FABA5A97}</Project>
       <Name>SelfControl</Name>
     </ProjectReference>
   </ItemGroup>

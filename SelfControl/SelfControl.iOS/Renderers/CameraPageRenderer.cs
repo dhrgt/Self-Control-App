@@ -214,7 +214,7 @@ namespace SelfControl.iOS.Renderers
             galleryButton.SetBackgroundImage(UIImage.FromFile("gallery.png"), UIControlState.Normal);
 
             View.Add(liveCameraStream);
-            View.Add(RoiView);
+            //View.Add(RoiView);
             View.Add(takePhotoButton);
             View.Add(toggleFlashButton);
             View.Add(backButton);
