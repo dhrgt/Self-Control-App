@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SelfControl.DatabaseManager
 {
-    public class FoodItemsDatabse : ConnectionManager
+    public class FoodItemsDatabase : ConnectionManager
     {
-        public FoodItemsDatabse(string filePath) : base(filePath)
+        public FoodItemsDatabase(string filePath) : base(filePath)
         {
             database.CreateTableAsync<FoodItem>().Wait();
         }

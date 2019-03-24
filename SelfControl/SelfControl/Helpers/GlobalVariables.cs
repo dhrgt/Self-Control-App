@@ -33,7 +33,7 @@ namespace SelfControl.Helpers
 
         private static List<FoodItem> FoodItems = new List<FoodItem>();
 
-        public static FoodItemsDatabse foodItemsDatabse = new FoodItemsDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
+        public static FoodItemsDatabase foodItemsDatabase = new FoodItemsDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
         public static DailyReviewDatabase dailyReviewDatabase = new DailyReviewDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
         public static WeeklyReviewDatabse weeklyReviewDatabse = new WeeklyReviewDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
 
@@ -178,7 +178,7 @@ namespace SelfControl.Helpers
 
         async public static void UpdateDateDiary(int id)
         {
-            List<FoodItem> foods = await foodItemsDatabse.QueryById(id);
+            List<FoodItem> foods = await foodItemsDatabase.QueryById(id);
             FoodItem food = foods.First();
             DateTime date = food.DATE;
             if (dateDiary.ContainsKey(date.Date))
@@ -210,7 +210,7 @@ namespace SelfControl.Helpers
         {
             dateDiary.Clear();
             FoodItems.Clear();
-            List<FoodItem> foods = await foodItemsDatabse.QueryByDateTime();
+            List<FoodItem> foods = await foodItemsDatabase.QueryByDateTime();
             FoodItems = foods;
             foreach (var food in foods)
             {

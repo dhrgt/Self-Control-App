@@ -23,7 +23,7 @@ namespace SelfControl.Helpers
 
         async private void SaveFoodItems()
         {
-            foodItems = await GlobalVariables.foodItemsDatabse.QueryByDateTime();
+            foodItems = await GlobalVariables.foodItemsDatabase.QueryByDateTime();
             StringBuilder tableContent = new StringBuilder();
 
             tableContent.Append(FoodItem.idCol + "," +

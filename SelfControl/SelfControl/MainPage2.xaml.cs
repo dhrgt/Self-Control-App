@@ -1,15 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace SelfControl
 {
-    public partial class MainPage2 : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class MainPage2 : TabbedPage
     {
         public MainPage2()
         {
             InitializeComponent();
+            var pages = Children.GetEnumerator();
+            pages.MoveNext();
+            pages.MoveNext();
+            CurrentPage = pages.Current;
         }
+
+
     }
 }

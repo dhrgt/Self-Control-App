@@ -15,7 +15,7 @@ namespace SelfControl
 		{
 			InitializeComponent();
 
-			MainPage = new NavigationPage(new SelfControl.MainPage());
+			MainPage = new NavigationPage(new SelfControl.MainPage2());
 		}
 
 		protected override void OnStart ()

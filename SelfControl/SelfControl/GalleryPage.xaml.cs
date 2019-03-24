@@ -214,9 +214,9 @@ namespace SelfControl
             {
                 RemoveFromDateDiary(i.DatabaseItem);
                 Task.Run(async () => {
-                    if (foodItemsDatabse != null)
+                    if (foodItemsDatabase != null)
                     {
-                        await foodItemsDatabse.DeleteItemAsync(i.DatabaseItem);
+                        await foodItemsDatabase.DeleteItemAsync(i.DatabaseItem);
                     }
                 });
             }

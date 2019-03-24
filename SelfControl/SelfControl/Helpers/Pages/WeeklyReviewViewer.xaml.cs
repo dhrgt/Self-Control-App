@@ -77,7 +77,7 @@ namespace SelfControl.Helpers.Pages
             this.SetBinding(WeeklyReviewViewer.CurrentIndexProperty, nameof(WeeklyReviewViewerModel.CurrentIndex));
 
             Task.Run(async() => {
-                list = await GlobalVariables.foodItemsDatabse.QueryByDateTime();
+                list = await GlobalVariables.foodItemsDatabase.QueryByDateTime();
                 responses = new Dictionary<int, Dictionary<int, int>>(list.Count);
                 foreach (var i in list)
                 {
