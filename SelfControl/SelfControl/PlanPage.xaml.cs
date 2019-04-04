@@ -17,10 +17,10 @@ namespace SelfControl
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class PlanPage : ContentPage
 	{
-        List<FoodItem> ChosenItems;
-        Grid viewGallery;
-        List<FoodItem> FoodItems;
-        bool ContinueOption;
+        List<FoodItem> ChosenItems; //empty list of selected images
+        Grid viewGallery; //pictures in grid layout
+        List<FoodItem> FoodItems; //empty list of all images
+        bool ContinueOption; //if pictures selected the continue option appears
         ToolbarItem continueToolBar;
 
         public PlanPage()
@@ -29,7 +29,7 @@ namespace SelfControl
             ChosenItems = new List<FoodItem>(GlobalVariables.PRACTICE_NUMBER);
             InitializeComponent();
             
-            FoodItems = GlobalVariables.getFoodItems();
+            FoodItems = GlobalVariables.getFoodItems(); //populate list with all food items
 
 #if RANDOM
             NavigationPage.SetHasNavigationBar(this, false);
@@ -105,7 +105,7 @@ namespace SelfControl
             }
 
 #elif SELECT
-            Title = "Selected 0";
+            Title = "Selected 0 items";
             continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
             viewGallery = new Grid
             {
@@ -194,7 +194,7 @@ namespace SelfControl
 
         public void UpdateTitle()
         {
-            Title = "Selected " + ChosenItems.Count.ToString();
+            Title = "Selected " + ChosenItems.Count.ToString() + " " + "items";
             MakeOptionsVisible();
         }
 

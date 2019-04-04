@@ -27,11 +27,10 @@ namespace SelfControl
 
         public GalleryPage()
         {
+            InitializeComponent();
             selectedItems = new List<ImageDisplay>();
             mode = GalleryMode.Normal;
-            InitializeComponent();
             Title = "Gallery";
-            foodDiary = getDateDiary();
             deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
             
             view = new StackLayout();
@@ -39,17 +38,27 @@ namespace SelfControl
             {
                 Orientation = ScrollOrientation.Vertical
             };
-            
-            Task.Run(() =>
-            {
-                SetView();
-                Update();
-            });
+            Update();
+            this.initialLoad();
+        }
+
+        async void initialLoad()
+        {
+            foodDiary = await GlobalVariables.UpdateDateDiary();
+            SetView();
+            Update();
+        }
+
+
+        async void OnReviewButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new WeeklyReviewPage(), true);
         }
 
         private void SetView()
         {
             view.Children.Clear();
+
             foreach (var i in foodDiary)
             {
                 DateTime date = i.Key;
@@ -138,6 +147,16 @@ namespace SelfControl
                 fillGrid(imageGrid, images);
                 view.Children.Add(dateLabel);
                 view.Children.Add(imageGrid);
+
+                var reviewButton = new Button
+                {
+                    Text = "Review Your Meals",
+                    BorderWidth = 1,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                reviewButton.Clicked += OnReviewButtonClicked;
+                view.Children.Add(reviewButton);
             }
         }
 
@@ -149,7 +168,7 @@ namespace SelfControl
             }
             else if (mode == GalleryMode.Selection)
             {
-                Title = "Selected " + selectedItems.Count.ToString();
+                Title = "Selected " + selectedItems.Count.ToString() + " " +"items";
             }
         }
 

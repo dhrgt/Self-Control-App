@@ -61,7 +61,7 @@ namespace SelfControl.Helpers
         {
             { 0, "How frequently do you eat this?" },
             { 1, "How much do you plan to eat this in the future?" },
-            { 2, "How healthy do you think this food is?" }
+            { 2, "How healthy do you think this food is?" },
         };
 
         public static Dictionary<int, string> DailyReviewQuestions = new Dictionary<int, string>()
@@ -133,7 +133,7 @@ namespace SelfControl.Helpers
             {
                 string name = tokens[i];
                 string freq = tokens[i + 1];
-                
+
                 int count = int.Parse(freq);
                 int key = int.Parse(name);
                 d.Add(key, count);
@@ -206,7 +206,7 @@ namespace SelfControl.Helpers
             }
         }
 
-        async public static void UpdateDateDiary()
+        async public static Task<Dictionary<DateTime, List<FoodItem>>> UpdateDateDiary()
         {
             dateDiary.Clear();
             FoodItems.Clear();
@@ -225,6 +225,7 @@ namespace SelfControl.Helpers
                     dateDiary[date.Date].Add(food);
                 }
             }
+            return dateDiary;
         }
     }
 }

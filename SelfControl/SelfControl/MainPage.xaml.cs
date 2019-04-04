@@ -14,12 +14,11 @@ namespace SelfControl
         {
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.White;
-            GlobalVariables.UpdateDateDiary();
             InitializeComponent();
 
             var title = new Label
             {
-                Text = "Self Control",
+                Text = "Self Control Game",
                 FontSize = 40,
                 FontAttributes = FontAttributes.Italic,
                 TextColor = Color.Black,
@@ -37,11 +36,21 @@ namespace SelfControl
             };
             cameraButton.Clicked += OnCameraButtonClicked;
 
+            var mealButton = new Button
+            {
+                Text = "Plan a Meal",
+                BorderWidth = 1,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+
+            };
+            mealButton.Clicked += OnPlanButtonClicked;
 
             Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 20, 10, 5) : new Thickness(10, 0, 10, 5);
             var stack = new StackLayout();
             stack.Children.Add(title);
             stack.Children.Add(cameraButton);
+            stack.Children.Add(mealButton);
 
             var info = new Label
             {
@@ -67,6 +76,13 @@ namespace SelfControl
         {
             await Navigation.PushAsync(new CameraPage(), true);
         }
+
+        async void OnPlanButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PlanPage(), true);
+
+        }
+
 
     }
 }
