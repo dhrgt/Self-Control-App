@@ -121,7 +121,7 @@ namespace SelfControl.Helpers.Pages
                         questionsView.Children.Add(Group);
                     }
                     AbsoluteLayout.SetLayoutFlags(questionsView, AbsoluteLayoutFlags.All);
-                    AbsoluteLayout.SetLayoutBounds(questionsView, new Rectangle(1, 1, 1, 0.5));
+                    AbsoluteLayout.SetLayoutBounds(questionsView, new Rectangle(1, 1, 1, 1));
 
                     next = new Button
                     {

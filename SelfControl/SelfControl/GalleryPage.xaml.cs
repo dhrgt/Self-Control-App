@@ -148,16 +148,17 @@ namespace SelfControl
                 view.Children.Add(dateLabel);
                 view.Children.Add(imageGrid);
 
-                var reviewButton = new Button
-                {
-                    Text = "Review Your Meals",
-                    BorderWidth = 1,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center
-                };
-                reviewButton.Clicked += OnReviewButtonClicked;
-                view.Children.Add(reviewButton);
+
             }
+            var reviewButton = new Button
+            {
+                Text = "Review Your Meals",
+                BorderWidth = 1,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            reviewButton.Clicked += OnReviewButtonClicked;
+            view.Children.Add(reviewButton);
         }
 
         public void UpdateTitle()
