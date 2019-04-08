@@ -30,7 +30,7 @@ namespace SelfControl
             InitializeComponent();
             selectedItems = new List<ImageDisplay>();
             mode = GalleryMode.Normal;
-            Title = "Gallery";
+            //Title = "Gallery";
             deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
             
             view = new StackLayout();

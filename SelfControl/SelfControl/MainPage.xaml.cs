@@ -16,6 +16,8 @@ namespace SelfControl
             BackgroundColor = Color.White;
             InitializeComponent();
 
+
+
             var title = new Label
             {
                 Text = "Self Control Game",
