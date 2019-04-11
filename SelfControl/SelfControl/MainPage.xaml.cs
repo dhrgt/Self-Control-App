@@ -48,28 +48,6 @@ namespace SelfControl
             };
 
 
-            var someText = new Label
-            {
-                Text = "OR",
-                FontSize = 14,
-                TextColor = Color.Black,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.EndAndExpand,
-                Margin = new Thickness(0, 50, 0, 20)
-            };
-
-
-            var someText1 = new Label
-            {
-                Text = "Take another picture",
-                FontSize = 14,
-                TextColor = Color.Black,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.EndAndExpand,
-                Margin = new Thickness(0, 50, 0, 20)
-            };
-
-
             mealButton.Clicked += OnPlanButtonClicked;
 
             Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 20, 10, 5) : new Thickness(10, 0, 10, 5);

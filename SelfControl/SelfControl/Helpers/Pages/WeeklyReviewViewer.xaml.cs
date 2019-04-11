@@ -110,10 +110,11 @@ namespace SelfControl.Helpers.Pages
                         };
                         QuestionLabel = new Label
                         {
+
                             Text = question.Value,
                             HorizontalOptions = LayoutOptions.StartAndExpand,
                             TextColor = Color.Black,
-                            FontSize = 20,
+                            FontSize = 16,
                             Margin = new Thickness(10, 20, 0, 0)
                         };
                         radioGroups.Add(question.Key, Group);
@@ -121,7 +122,7 @@ namespace SelfControl.Helpers.Pages
                         questionsView.Children.Add(Group);
                     }
                     AbsoluteLayout.SetLayoutFlags(questionsView, AbsoluteLayoutFlags.All);
-                    AbsoluteLayout.SetLayoutBounds(questionsView, new Rectangle(1, 1, 1, 1));
+                    AbsoluteLayout.SetLayoutBounds(questionsView, new Rectangle(1, 1, 1, 0.5));
 
                     next = new Button
                     {
