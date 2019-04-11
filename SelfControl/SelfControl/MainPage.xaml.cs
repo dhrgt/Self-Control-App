@@ -48,7 +48,7 @@ namespace SelfControl
             };
 
 
-            mealButton.Clicked += OnPlanButtonClicked;
+            //mealButton.Clicked += OnPlanButtonClicked;
 
             Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 20, 10, 5) : new Thickness(10, 0, 10, 5);
             var stack = new StackLayout();
@@ -81,13 +81,21 @@ namespace SelfControl
             //    await Navigation.PushAsync(new CameraPage(), true);
             //}
 
-            async void OnPlanButtonClicked(object sender, EventArgs e)
-            {
-                await Navigation.PushAsync(new PlanPage(), true);
+            //async void OnPlanButtonClicked(object sender, EventArgs e)
+            //{
+            //    await Navigation.PushAsync(new PlanPage(), true);
 
-            }
+            //}
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            Navigation.PushAsync(new PlanPage(), true);
 
         }
+
+
+    }
     }
 
