@@ -77,6 +77,22 @@ namespace SelfControl.Helpers.Pages
 
             this.SetBinding(PracticeViewer.CurrentIndexProperty, nameof(PracticeViewerModel.CurrentIndex));
 
+            noIcon = new Image
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60
+            };
+            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
+            var cancelByte = new byte[cancelStream.Length];
+            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
+            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
+            TapGestureRecognizer noTapped = new TapGestureRecognizer();
+            noTapped.CommandParameter = true;
+            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            noIcon.GestureRecognizers.Add(noTapped);
+
             yesIcon = new Image
             {
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -93,21 +109,6 @@ namespace SelfControl.Helpers.Pages
             yesTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
             yesIcon.GestureRecognizers.Add(yesTapped);
 
-            noIcon = new Image
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
-            var cancelByte = new byte[cancelStream.Length];
-            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
-            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
-            TapGestureRecognizer noTapped = new TapGestureRecognizer();
-            noTapped.CommandParameter = true;
-            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
-            noIcon.GestureRecognizers.Add(noTapped);
 
             cool = new CustomPracticeButtons
             {

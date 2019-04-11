@@ -28,10 +28,10 @@ namespace SelfControl
             ContinueOption = false;
             ChosenItems = new List<FoodItem>(GlobalVariables.PRACTICE_NUMBER);
             InitializeComponent();
-            
+
             FoodItems = GlobalVariables.getFoodItems(); //populate list with all food items
 
-#if RANDOM
+            //if random
             NavigationPage.SetHasNavigationBar(this, false);
             Randomizer randomizer = new Randomizer();
             List<int> list;
@@ -45,9 +45,9 @@ namespace SelfControl
             }
             else if (Settings.RandomCriteriaValue == (int)GlobalVariables.RandomCriteria.Health)
             {
-            //TODO: Change value of health from 0 to 4 to -2 to 2 
-            // Use Math.Abs(health - 5)
-            // Use Math.Pow(base, exponent)
+                //TODO: Change value of health from 0 to 4 to -2 to 2 
+                // Use Math.Abs(health - 5)
+                // Use Math.Pow(base, exponent)
                 int seed = 0;
                 List<int> intervals = new List<int>(FoodItems.Count);
                 for (int f = 0; f < FoodItems.Count; f++)
@@ -103,121 +103,121 @@ namespace SelfControl
                     ChosenItems.Add(FoodItems[intervals[i]]);
                 }
             }
-
-#elif SELECT
-            Title = "Selected 0 items";
-            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
-            viewGallery = new Grid
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
-                 },
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start
+        }
+//#elif SELECT
+//            Title = "Selected 0 items";
+//            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
+//            viewGallery = new Grid
+//            {
+//                ColumnDefinitions =
+//                {
+//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
+//                 },
+//                VerticalOptions = LayoutOptions.Start,
+//                HorizontalOptions = LayoutOptions.Start
                 
-            };
-            SetView();
-            Update();
-#endif
-        }
+//            };
+//            SetView();
+//            Update();
+//#endif
+        //}
 
-        public void Update()
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                this.Content = viewGallery;
-            });
-        }
+        //public void Update()
+        //{
+        //    Device.BeginInvokeOnMainThread(() =>
+        //    {
+        //        this.Content = viewGallery;
+        //    });
+        //}
 
-        private void SetView()
-        {
-            viewGallery.Children.Clear();
-            int colNum = 0;
-            int rowNum = 0;
-            foreach (var food in FoodItems)
-            {
-                byte[] thumbnail = Helpers.GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES);
-                if (thumbnail != null)
-                {
-                    ImageDisplay bmp = new ImageDisplay
-                    {
-                         ImageByte = thumbnail,
-                         WidthRequest = App.ScreenWidth / 4,
-                         HeightRequest = App.ScreenWidth / 4,
-                         Aspect = Aspect.AspectFill,
-                         DatabaseItem = food
-                    };
-                    bmp.OnTouch = new Command((p) =>
-                    {
-                        Console.WriteLine("LongClick");
-                        bmp.IsSelected = !bmp.IsSelected;
-                        if (bmp.IsSelected)
-                        {
-                            ChosenItems.Add(food);
-                            UpdateTitle();
-                        }
-                        else
-                        {
-                             ChosenItems.Remove(food);
-                             UpdateTitle();
-                        }
-                    });
-                    bmp.OnClick = new Command((p) =>
-                    {
-                        bmp.IsSelected = !bmp.IsSelected;
-                        if (bmp.IsSelected)
-                        {
-                            ChosenItems.Add(food);
-                            UpdateTitle();
-                        }
-                        else
-                        {
-                            ChosenItems.Remove(food);
-                            UpdateTitle();
-                        }
-                    });
+        //private void SetView()
+        //{
+        //    viewGallery.Children.Clear();
+        //    int colNum = 0;
+        //    int rowNum = 0;
+        //    foreach (var food in FoodItems)
+        //    {
+        //        byte[] thumbnail = Helpers.GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES);
+        //        if (thumbnail != null)
+        //        {
+        //            ImageDisplay bmp = new ImageDisplay
+        //            {
+        //                 ImageByte = thumbnail,
+        //                 WidthRequest = App.ScreenWidth / 4,
+        //                 HeightRequest = App.ScreenWidth / 4,
+        //                 Aspect = Aspect.AspectFill,
+        //                 DatabaseItem = food
+        //            };
+        //            bmp.OnTouch = new Command((p) =>
+        //            {
+        //                Console.WriteLine("LongClick");
+        //                bmp.IsSelected = !bmp.IsSelected;
+        //                if (bmp.IsSelected)
+        //                {
+        //                    ChosenItems.Add(food);
+        //                    UpdateTitle();
+        //                }
+        //                else
+        //                {
+        //                     ChosenItems.Remove(food);
+        //                     UpdateTitle();
+        //                }
+        //            });
+        //            bmp.OnClick = new Command((p) =>
+        //            {
+        //                bmp.IsSelected = !bmp.IsSelected;
+        //                if (bmp.IsSelected)
+        //                {
+        //                    ChosenItems.Add(food);
+        //                    UpdateTitle();
+        //                }
+        //                else
+        //                {
+        //                    ChosenItems.Remove(food);
+        //                    UpdateTitle();
+        //                }
+        //            });
                     
-                    if (colNum == 4)
-                    {
-                        rowNum++;
-                        colNum = 0;
-                    }
-                    viewGallery.Children.Add(bmp, colNum, rowNum);
-                    colNum++;
-                }
-            }
-        }
+        //            if (colNum == 4)
+        //            {
+        //                rowNum++;
+        //                colNum = 0;
+        //            }
+        //            viewGallery.Children.Add(bmp, colNum, rowNum);
+        //            colNum++;
+        //        }
+        //    }
+        //}
 
-        public void UpdateTitle()
-        {
-            Title = "Selected " + ChosenItems.Count.ToString() + " " + "items";
-            MakeOptionsVisible();
-        }
+        //public void UpdateTitle()
+        //{
+        //    Title = "Selected " + ChosenItems.Count.ToString() + " " + "items";
+        //    MakeOptionsVisible();
+        //}
 
-        public void MakeOptionsVisible()
-        {
-            if (ChosenItems.Count < 1)
-            {
-                ToolbarItems.Remove(continueToolBar);
-                ContinueOption = false;
-            }
-            else if (ChosenItems.Count > 0 && !ContinueOption)
-            {
-                ToolbarItems.Add(continueToolBar);
-                ContinueOption = true;
-            }
-        }
+        //public void MakeOptionsVisible()
+        //{
+        //    if (ChosenItems.Count < 1)
+        //    {
+        //        ToolbarItems.Remove(continueToolBar);
+        //        ContinueOption = false;
+        //    }
+        //    else if (ChosenItems.Count > 0 && !ContinueOption)
+        //    {
+        //        ToolbarItems.Add(continueToolBar);
+        //        ContinueOption = true;
+        //    }
+        //}
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-#if RANDOM
+
             Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true);
-#endif
+
         }
 
     }

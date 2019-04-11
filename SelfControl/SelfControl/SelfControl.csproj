@@ -18,6 +18,7 @@
     <None Remove="Resources\health_icon.png" />
     <None Remove="Resources\heart_icon.png" />
     <None Remove="Resources\ice_button.png" />
+    <None Remove="Resources\takemorepics.png" />  
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <EmbeddedResource Include="Resources\frequency_icon.png" />
     <EmbeddedResource Include="Resources\heart_icon.png" />
     <EmbeddedResource Include="Resources\ice_button.png" />
+    <EmbeddedResource Include="Resources\takemorepics.png" />
   </ItemGroup>
 
   <ItemGroup>

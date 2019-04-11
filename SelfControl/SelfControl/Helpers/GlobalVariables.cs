@@ -20,7 +20,7 @@ namespace SelfControl.Helpers
 
         public const double CAMERA_ROI_SIZE = 5.0;
 
-        public const int PRACTICE_NUMBER = 3;
+        public const int PRACTICE_NUMBER = 10;
 
         public const string DATABASE_NAME = "foodDB.db3";
 
