@@ -39,7 +39,7 @@ namespace SelfControl.Helpers.Pages
                 {
                     Task.Run(async () =>
                     {
-                        await Task.Delay(1000);
+                        await Task.Delay(2000);
                         Device.BeginInvokeOnMainThread(() => Navigation.PopToRootAsync());
                     });
                 }
@@ -59,7 +59,7 @@ namespace SelfControl.Helpers.Pages
                 list.Add(i.ID, GlobalVariables.DeserializeStringToByteArray(i.IMGBYTES));
             }
             Assembly assembly = typeof(PracticeViewer).GetTypeInfo().Assembly;
-            var blankStream = assembly.GetManifestResourceStream("SelfControl.Resources.blank.jpg");
+            var blankStream = assembly.GetManifestResourceStream("SelfControl.Resources.takemorepics.png");
             var blankByte = new byte[blankStream.Length];
             blankStream.Read(blankByte, 0, System.Convert.ToInt32(blankStream.Length));
             list.Add(-1, blankByte);
