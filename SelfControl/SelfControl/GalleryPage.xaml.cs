@@ -39,16 +39,15 @@ namespace SelfControl
                 Orientation = ScrollOrientation.Vertical
             };
             Update();
-            this.initialLoad();
+            this.InitialLoad();
         }
 
-        async void initialLoad()
+        async void InitialLoad()
         {
             foodDiary = await GlobalVariables.UpdateDateDiary();
             SetView();
             Update();
         }
-
 
         async void OnReviewButtonClicked(object sender, EventArgs e)
         {

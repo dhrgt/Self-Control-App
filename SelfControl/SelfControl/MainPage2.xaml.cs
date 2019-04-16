@@ -17,5 +17,7 @@ namespace SelfControl
             CurrentPage = pages.Current;
             Xamarin.Forms.PlatformConfiguration.AndroidSpecific.TabbedPage.SetIsSwipePagingEnabled(this, false);
         }
+
+
     }
 }
