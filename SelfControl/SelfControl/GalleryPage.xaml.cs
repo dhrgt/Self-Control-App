@@ -26,7 +26,7 @@ namespace SelfControl
         ToolbarItem deleteOption;
 
         public GalleryPage()
-        {
+        { 
             InitializeComponent();
             selectedItems = new List<ImageDisplay>();
             mode = GalleryMode.Normal;

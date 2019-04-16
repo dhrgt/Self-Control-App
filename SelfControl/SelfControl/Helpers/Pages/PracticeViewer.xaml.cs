@@ -37,17 +37,24 @@ namespace SelfControl.Helpers.Pages
                 _currentIndex = value;
                 if (_currentIndex == list.Count - 1)
                 {
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(2000);
-                        Device.BeginInvokeOnMainThread(() => Navigation.PopToRootAsync());
-                    });
+                    //Task.Run(async () =>
+                    //{
+                    //await Task.Delay(2000);
+                    //Device.BeginInvokeOnMainThread(() => )
+                    //Navigation.RemovePage(this);
+
+                    //Navigation.PushAsync(new SamplePicture(), true);
+                    fullView.Children.Remove(grid);
+
+                    //});
                 }
             }
         }
 
         public Image yesIcon;
         public Image noIcon;
+        StackLayout grid;
+        AbsoluteLayout fullView;
         CustomPracticeButtons hot, cool;
 
         public PracticeViewer(List<FoodItem> FoodList)
@@ -134,7 +141,7 @@ namespace SelfControl.Helpers.Pages
             hot.IconBytes = fireByte;
             AbsoluteLayout.SetLayoutFlags(carouselView, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(carouselView, new Rectangle(0, 0, 1, 0.88));
-            StackLayout grid = new StackLayout
+            grid = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.Black
@@ -146,13 +153,14 @@ namespace SelfControl.Helpers.Pages
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.12));
 
-            AbsoluteLayout fullView = new AbsoluteLayout();
+            fullView = new AbsoluteLayout();
             fullView.Children.Add(carouselView);
             fullView.Children.Add(grid);
             carouselView.ViewChanged += GetCurrentView;
             BindingContext = new PracticeViewerModel(carouselView, list, 0);
             this.BackgroundColor = Color.Black;
             Content = fullView;
+         
 
         }
 

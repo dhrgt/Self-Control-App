@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+
 namespace SelfControl
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
@@ -104,25 +105,25 @@ namespace SelfControl
                 }
             }
         }
-//#elif SELECT
-//            Title = "Selected 0 items";
-//            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
-//            viewGallery = new Grid
-//            {
-//                ColumnDefinitions =
-//                {
-//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-//                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
-//                 },
-//                VerticalOptions = LayoutOptions.Start,
-//                HorizontalOptions = LayoutOptions.Start
-                
-//            };
-//            SetView();
-//            Update();
-//#endif
+        //#elif SELECT
+        //            Title = "Selected 0 items";
+        //            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
+        //            viewGallery = new Grid
+        //            {
+        //                ColumnDefinitions =
+        //                {
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
+        //                 },
+        //                VerticalOptions = LayoutOptions.Start,
+        //                HorizontalOptions = LayoutOptions.Start
+
+        //            };
+        //            SetView();
+        //            Update();
+        //#endif
         //}
 
         //public void Update()
@@ -180,7 +181,7 @@ namespace SelfControl
         //                    UpdateTitle();
         //                }
         //            });
-                    
+
         //            if (colNum == 4)
         //            {
         //                rowNum++;
@@ -211,6 +212,12 @@ namespace SelfControl
         //        ContinueOption = true;
         //    }
         //}
+
+        async void InitialLoad()
+        {
+            await GlobalVariables.UpdateDateDiary();
+          
+        }
 
         protected override void OnAppearing()
         {

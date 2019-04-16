@@ -17,7 +17,7 @@ namespace SelfControl
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.White;
             InitializeComponent();
-            startImage.Source = ImageSource.FromResource("SelfControl.Resources.3takemorepics.png");
+
 
 
             var title = new Label
