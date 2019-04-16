@@ -3,9 +3,8 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SelfControl
+namespace SelfControl.MainPage2
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage2 : TabbedPage
     {
         public MainPage2()
@@ -18,6 +17,9 @@ namespace SelfControl
             Xamarin.Forms.PlatformConfiguration.AndroidSpecific.TabbedPage.SetIsSwipePagingEnabled(this, false);
         }
 
-
+        private void InitializeComponent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
