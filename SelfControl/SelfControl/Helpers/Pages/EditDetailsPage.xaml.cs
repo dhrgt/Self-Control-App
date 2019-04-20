@@ -27,8 +27,8 @@ namespace SelfControl.Helpers.Pages
 
         public EditDetailsPage (int id, GlobalVariables.EntryType e)
 		{
-			InitializeComponent ();
-            NavigationPage.SetHasNavigationBar(this, true);
+            NavigationPage.SetHasNavigationBar(this, false);
+            InitializeComponent ();
             Title = "Edit Details";
             EntryType = e;
             mID = id;

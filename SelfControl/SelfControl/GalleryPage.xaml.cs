@@ -17,7 +17,7 @@ namespace SelfControl
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class GalleryPage : ContentPage
-	{
+	{ 
         StackLayout view;
         ScrollView scrollView;
         Dictionary<DateTime,List<FoodItem>> foodDiary;
@@ -26,7 +26,8 @@ namespace SelfControl
         ToolbarItem deleteOption;
 
         public GalleryPage()
-        { 
+        {
+            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             selectedItems = new List<ImageDisplay>();
             mode = GalleryMode.Normal;

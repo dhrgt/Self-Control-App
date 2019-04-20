@@ -147,8 +147,8 @@ namespace SelfControl.Helpers.Pages
                 BackgroundColor = Color.Black
             };
             grid.Children.Add(hot);
-            grid.Children.Add(yesIcon);
             grid.Children.Add(noIcon);
+            grid.Children.Add(yesIcon);
             grid.Children.Add(cool);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.12));

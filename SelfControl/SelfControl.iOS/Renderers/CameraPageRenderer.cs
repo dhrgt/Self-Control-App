@@ -217,8 +217,8 @@ namespace SelfControl.iOS.Renderers
             //View.Add(RoiView);
             View.Add(takePhotoButton);
             View.Add(toggleFlashButton);
-            View.Add(backButton);
-            View.Add(galleryButton);
+            //View.Add(backButton);
+            //View.Add(galleryButton);
         }
 
         private void SetupEventHandlers()

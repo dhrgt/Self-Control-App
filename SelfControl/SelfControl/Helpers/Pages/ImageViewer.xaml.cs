@@ -80,7 +80,8 @@ namespace SelfControl.Helpers.Pages
         Label frequencyRating;
         Dictionary<int, byte[]> list;
         public ImageViewer (FoodItem food)
-		{   
+		{
+            NavigationPage.SetHasNavigationBar(this, false);
             int index = 0;
             CurrentIndex = index;
             bool indexSet = false;
@@ -110,7 +111,7 @@ namespace SelfControl.Helpers.Pages
             carouselView.SetBinding(CardsView.PanStartedCommandProperty, nameof(ImageViewerModel.PanStartedCommand));
             carouselView.SetBinding(CardsView.PositionChangedCommandProperty, nameof(ImageViewerModel.PanPositionChangedCommand));
 
-            //ToolbarItem deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
+            ToolbarItem deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
             ToolbarItem editOption = new ToolbarItem("Edit", "", new Action(() => { Navigation.PushAsync(new EditDetailsPage(getCurrentID(), GlobalVariables.EntryType.UPDATE_ENTRY)); }), ToolbarItemOrder.Primary, 0);
 
             AbsoluteLayout UserPrefs = new AbsoluteLayout
@@ -178,8 +179,8 @@ namespace SelfControl.Helpers.Pages
             carouselView.Children.Add(UserPrefs);
 
             Content = carouselView;
-            //ToolbarItems.Add(deleteOption);
             ToolbarItems.Add(editOption);
+            ToolbarItems.Add(deleteOption);
             BindingContext = new ImageViewerModel(list, index);
         }
         protected override void OnAppearing()
