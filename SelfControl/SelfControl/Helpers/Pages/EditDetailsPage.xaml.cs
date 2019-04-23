@@ -246,7 +246,7 @@ namespace SelfControl.Helpers.Pages
                 food.ANSWERS = GlobalVariables.SerializeDictionary(dict);
                 await GlobalVariables.foodItemsDatabase.SaveItemAsync(food);
                 await Task.Run(() => { GlobalVariables.UpdateDateDiary(food.ID); });
-                await Navigation.PopAsync();
+                await Navigation.PopToRootAsync();
             }
         }
 
