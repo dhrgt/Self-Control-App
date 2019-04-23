@@ -33,6 +33,7 @@ namespace SelfControl
             mode = GalleryMode.Normal;
             //Title = "Gallery";
             deleteOption = new ToolbarItem("Delete", "", new Action(() => { DeleteSelectedImage(); }), ToolbarItemOrder.Primary, 0);
+
             
             view = new StackLayout();
             scrollView = new ScrollView
