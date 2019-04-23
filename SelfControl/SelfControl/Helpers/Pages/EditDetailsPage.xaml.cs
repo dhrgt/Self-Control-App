@@ -270,7 +270,7 @@ namespace SelfControl.Helpers.Pages
                 DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(food.PATH);
                 await GlobalVariables.foodItemsDatabase.DeleteItemAsync(food);
             }
-            await Navigation.PopAsync();
+            await Navigation.PopToRootAsync();
         }
     }
 }

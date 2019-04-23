@@ -23,8 +23,12 @@ namespace SelfControl
                 if (i == 1)
                 {
                     CurrentPage.Navigation.PushAsync(new PlanPage(), true);
-                    this.CurrentPage.Navigation.PopToRootAsync();
                     //Navigation.PushAsync(new PlanPage(), true);
+                }
+
+                if (i == 2)
+                {
+                    CurrentPage.Navigation.PopToRootAsync();
                 }
 
             };
