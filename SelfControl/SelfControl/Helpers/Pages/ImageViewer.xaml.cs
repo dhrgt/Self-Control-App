@@ -27,14 +27,14 @@ namespace SelfControl.Helpers.Pages
 
         async private void UpdateTitle()
         {
-            List<FoodItem> Items = await GlobalVariables.foodItemsDatabse.QueryById(getCurrentID());
+            List<FoodItem> Items = await GlobalVariables.foodItemsDatabase.QueryById(getCurrentID());
             FoodItem foodItem = Items.First();
             Title = foodItem.NAME;
         }
 
         async private void UpdateStats()
         {
-            List<FoodItem> Items = await GlobalVariables.foodItemsDatabse.QueryById(getCurrentID());
+            List<FoodItem> Items = await GlobalVariables.foodItemsDatabase.QueryById(getCurrentID());
             FoodItem foodItem = Items.First();
             Dictionary<int, int> dictionary = GlobalVariables.DeserializeDictionary(foodItem.ANSWERS);
             frequencyRating.Text = textToRating(dictionary[1]);
@@ -80,7 +80,8 @@ namespace SelfControl.Helpers.Pages
         Label frequencyRating;
         Dictionary<int, byte[]> list;
         public ImageViewer (FoodItem food)
-		{   
+		{
+            NavigationPage.SetHasNavigationBar(this, false);
             int index = 0;
             CurrentIndex = index;
             bool indexSet = false;
@@ -178,8 +179,8 @@ namespace SelfControl.Helpers.Pages
             carouselView.Children.Add(UserPrefs);
 
             Content = carouselView;
-            //ToolbarItems.Add(deleteOption);
             ToolbarItems.Add(editOption);
+            //ToolbarItems.Add(deleteOption);
             BindingContext = new ImageViewerModel(list, index);
         }
         protected override void OnAppearing()

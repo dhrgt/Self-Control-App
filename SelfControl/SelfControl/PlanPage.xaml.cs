@@ -12,15 +12,16 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+
 namespace SelfControl
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class PlanPage : ContentPage
 	{
-        List<FoodItem> ChosenItems;
-        Grid viewGallery;
-        List<FoodItem> FoodItems;
-        bool ContinueOption;
+        List<FoodItem> ChosenItems; //empty list of selected images
+        Grid viewGallery; //pictures in grid layout
+        List<FoodItem> FoodItems; //empty list of all images
+        bool ContinueOption; //if pictures selected the continue option appears
         ToolbarItem continueToolBar;
 
         public PlanPage()
@@ -28,10 +29,10 @@ namespace SelfControl
             ContinueOption = false;
             ChosenItems = new List<FoodItem>(GlobalVariables.PRACTICE_NUMBER);
             InitializeComponent();
-            
-            FoodItems = GlobalVariables.getFoodItems();
 
-#if RANDOM
+            FoodItems = GlobalVariables.getFoodItems(); //populate list with all food items
+
+            //if random
             NavigationPage.SetHasNavigationBar(this, false);
             Randomizer randomizer = new Randomizer();
             List<int> list;
@@ -45,9 +46,9 @@ namespace SelfControl
             }
             else if (Settings.RandomCriteriaValue == (int)GlobalVariables.RandomCriteria.Health)
             {
-            //TODO: Change value of health from 0 to 4 to -2 to 2 
-            // Use Math.Abs(health - 5)
-            // Use Math.Pow(base, exponent)
+                //TODO: Change value of health from 0 to 4 to -2 to 2 
+                // Use Math.Abs(health - 5)
+                // Use Math.Pow(base, exponent)
                 int seed = 0;
                 List<int> intervals = new List<int>(FoodItems.Count);
                 for (int f = 0; f < FoodItems.Count; f++)
@@ -103,121 +104,127 @@ namespace SelfControl
                     ChosenItems.Add(FoodItems[intervals[i]]);
                 }
             }
-
-#elif SELECT
-            Title = "Selected 0";
-            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
-            viewGallery = new Grid
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
-                 },
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start
-                
-            };
-            SetView();
-            Update();
-#endif
         }
+        //#elif SELECT
+        //            Title = "Selected 0 items";
+        //            continueToolBar = new ToolbarItem("Continue", "", new Action(() => { Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true); }), ToolbarItemOrder.Primary, 0);
+        //            viewGallery = new Grid
+        //            {
+        //                ColumnDefinitions =
+        //                {
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) },
+        //                    new ColumnDefinition { Width = new GridLength(App.ScreenWidth / 4, GridUnitType.Absolute) }
+        //                 },
+        //                VerticalOptions = LayoutOptions.Start,
+        //                HorizontalOptions = LayoutOptions.Start
 
-        public void Update()
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                this.Content = viewGallery;
-            });
-        }
+        //            };
+        //            SetView();
+        //            Update();
+        //#endif
+        //}
 
-        private void SetView()
-        {
-            viewGallery.Children.Clear();
-            int colNum = 0;
-            int rowNum = 0;
-            foreach (var food in FoodItems)
-            {
-                byte[] thumbnail = Helpers.GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES);
-                if (thumbnail != null)
-                {
-                    ImageDisplay bmp = new ImageDisplay
-                    {
-                         ImageByte = thumbnail,
-                         WidthRequest = App.ScreenWidth / 4,
-                         HeightRequest = App.ScreenWidth / 4,
-                         Aspect = Aspect.AspectFill,
-                         DatabaseItem = food
-                    };
-                    bmp.OnTouch = new Command((p) =>
-                    {
-                        Console.WriteLine("LongClick");
-                        bmp.IsSelected = !bmp.IsSelected;
-                        if (bmp.IsSelected)
-                        {
-                            ChosenItems.Add(food);
-                            UpdateTitle();
-                        }
-                        else
-                        {
-                             ChosenItems.Remove(food);
-                             UpdateTitle();
-                        }
-                    });
-                    bmp.OnClick = new Command((p) =>
-                    {
-                        bmp.IsSelected = !bmp.IsSelected;
-                        if (bmp.IsSelected)
-                        {
-                            ChosenItems.Add(food);
-                            UpdateTitle();
-                        }
-                        else
-                        {
-                            ChosenItems.Remove(food);
-                            UpdateTitle();
-                        }
-                    });
-                    
-                    if (colNum == 4)
-                    {
-                        rowNum++;
-                        colNum = 0;
-                    }
-                    viewGallery.Children.Add(bmp, colNum, rowNum);
-                    colNum++;
-                }
-            }
-        }
+        //public void Update()
+        //{
+        //    Device.BeginInvokeOnMainThread(() =>
+        //    {
+        //        this.Content = viewGallery;
+        //    });
+        //}
 
-        public void UpdateTitle()
-        {
-            Title = "Selected " + ChosenItems.Count.ToString();
-            MakeOptionsVisible();
-        }
+        //private void SetView()
+        //{
+        //    viewGallery.Children.Clear();
+        //    int colNum = 0;
+        //    int rowNum = 0;
+        //    foreach (var food in FoodItems)
+        //    {
+        //        byte[] thumbnail = Helpers.GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES);
+        //        if (thumbnail != null)
+        //        {
+        //            ImageDisplay bmp = new ImageDisplay
+        //            {
+        //                 ImageByte = thumbnail,
+        //                 WidthRequest = App.ScreenWidth / 4,
+        //                 HeightRequest = App.ScreenWidth / 4,
+        //                 Aspect = Aspect.AspectFill,
+        //                 DatabaseItem = food
+        //            };
+        //            bmp.OnTouch = new Command((p) =>
+        //            {
+        //                Console.WriteLine("LongClick");
+        //                bmp.IsSelected = !bmp.IsSelected;
+        //                if (bmp.IsSelected)
+        //                {
+        //                    ChosenItems.Add(food);
+        //                    UpdateTitle();
+        //                }
+        //                else
+        //                {
+        //                     ChosenItems.Remove(food);
+        //                     UpdateTitle();
+        //                }
+        //            });
+        //            bmp.OnClick = new Command((p) =>
+        //            {
+        //                bmp.IsSelected = !bmp.IsSelected;
+        //                if (bmp.IsSelected)
+        //                {
+        //                    ChosenItems.Add(food);
+        //                    UpdateTitle();
+        //                }
+        //                else
+        //                {
+        //                    ChosenItems.Remove(food);
+        //                    UpdateTitle();
+        //                }
+        //            });
 
-        public void MakeOptionsVisible()
+        //            if (colNum == 4)
+        //            {
+        //                rowNum++;
+        //                colNum = 0;
+        //            }
+        //            viewGallery.Children.Add(bmp, colNum, rowNum);
+        //            colNum++;
+        //        }
+        //    }
+        //}
+
+        //public void UpdateTitle()
+        //{
+        //    Title = "Selected " + ChosenItems.Count.ToString() + " " + "items";
+        //    MakeOptionsVisible();
+        //}
+
+        //public void MakeOptionsVisible()
+        //{
+        //    if (ChosenItems.Count < 1)
+        //    {
+        //        ToolbarItems.Remove(continueToolBar);
+        //        ContinueOption = false;
+        //    }
+        //    else if (ChosenItems.Count > 0 && !ContinueOption)
+        //    {
+        //        ToolbarItems.Add(continueToolBar);
+        //        ContinueOption = true;
+        //    }
+        //}
+
+        async void InitialLoad()
         {
-            if (ChosenItems.Count < 1)
-            {
-                ToolbarItems.Remove(continueToolBar);
-                ContinueOption = false;
-            }
-            else if (ChosenItems.Count > 0 && !ContinueOption)
-            {
-                ToolbarItems.Add(continueToolBar);
-                ContinueOption = true;
-            }
+            await GlobalVariables.UpdateDateDiary();
+          
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-#if RANDOM
+
             Navigation.PushAsync(new Helpers.Pages.PracticeViewer(ChosenItems), true);
-#endif
+
         }
 
     }

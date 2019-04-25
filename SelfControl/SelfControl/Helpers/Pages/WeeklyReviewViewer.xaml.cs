@@ -77,7 +77,7 @@ namespace SelfControl.Helpers.Pages
             this.SetBinding(WeeklyReviewViewer.CurrentIndexProperty, nameof(WeeklyReviewViewerModel.CurrentIndex));
 
             Task.Run(async() => {
-                list = await GlobalVariables.foodItemsDatabse.QueryByDateTime();
+                list = await GlobalVariables.foodItemsDatabase.QueryByDateTime();
                 responses = new Dictionary<int, Dictionary<int, int>>(list.Count);
                 foreach (var i in list)
                 {
@@ -110,10 +110,11 @@ namespace SelfControl.Helpers.Pages
                         };
                         QuestionLabel = new Label
                         {
+
                             Text = question.Value,
                             HorizontalOptions = LayoutOptions.StartAndExpand,
                             TextColor = Color.Black,
-                            FontSize = 20,
+                            FontSize = 16,
                             Margin = new Thickness(10, 20, 0, 0)
                         };
                         radioGroups.Add(question.Key, Group);

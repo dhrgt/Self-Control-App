@@ -37,17 +37,24 @@ namespace SelfControl.Helpers.Pages
                 _currentIndex = value;
                 if (_currentIndex == list.Count - 1)
                 {
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(2000);
-                        Device.BeginInvokeOnMainThread(() => Navigation.PopToRootAsync());
-                    });
+                    //Task.Run(async () =>
+                    //{
+                    //await Task.Delay(2000);
+                    //Device.BeginInvokeOnMainThread(() => )
+                    //Navigation.RemovePage(this);
+
+                    //Navigation.PushAsync(new SamplePicture(), true);
+                    fullView.Children.Remove(grid);
+
+                    //});
                 }
             }
         }
 
         public Image yesIcon;
         public Image noIcon;
+        StackLayout grid;
+        AbsoluteLayout fullView;
         CustomPracticeButtons hot, cool;
 
         public PracticeViewer(List<FoodItem> FoodList)
@@ -59,7 +66,7 @@ namespace SelfControl.Helpers.Pages
                 list.Add(i.ID, GlobalVariables.DeserializeStringToByteArray(i.IMGBYTES));
             }
             Assembly assembly = typeof(PracticeViewer).GetTypeInfo().Assembly;
-            var blankStream = assembly.GetManifestResourceStream("SelfControl.Resources.blank.jpg");
+            var blankStream = assembly.GetManifestResourceStream("SelfControl.Resources.takemorepics.png");
             var blankByte = new byte[blankStream.Length];
             blankStream.Read(blankByte, 0, System.Convert.ToInt32(blankStream.Length));
             list.Add(-1, blankByte);
@@ -77,6 +84,22 @@ namespace SelfControl.Helpers.Pages
 
             this.SetBinding(PracticeViewer.CurrentIndexProperty, nameof(PracticeViewerModel.CurrentIndex));
 
+            noIcon = new Image
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 60,
+                HeightRequest = 60
+            };
+            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
+            var cancelByte = new byte[cancelStream.Length];
+            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
+            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
+            TapGestureRecognizer noTapped = new TapGestureRecognizer();
+            noTapped.CommandParameter = true;
+            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
+            noIcon.GestureRecognizers.Add(noTapped);
+
             yesIcon = new Image
             {
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -93,21 +116,6 @@ namespace SelfControl.Helpers.Pages
             yesTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
             yesIcon.GestureRecognizers.Add(yesTapped);
 
-            noIcon = new Image
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                WidthRequest = 60,
-                HeightRequest = 60
-            };
-            var cancelStream = assembly.GetManifestResourceStream("SelfControl.Resources.bin_icon.png");
-            var cancelByte = new byte[cancelStream.Length];
-            cancelStream.Read(cancelByte, 0, System.Convert.ToInt32(cancelStream.Length));
-            noIcon.Source = ImageSource.FromStream(() => new MemoryStream(cancelByte));
-            TapGestureRecognizer noTapped = new TapGestureRecognizer();
-            noTapped.CommandParameter = true;
-            noTapped.SetBinding(TapGestureRecognizer.CommandProperty, nameof(PracticeViewerModel.PanPositionChangedCommand));
-            noIcon.GestureRecognizers.Add(noTapped);
 
             cool = new CustomPracticeButtons
             {
@@ -133,25 +141,26 @@ namespace SelfControl.Helpers.Pages
             hot.IconBytes = fireByte;
             AbsoluteLayout.SetLayoutFlags(carouselView, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(carouselView, new Rectangle(0, 0, 1, 0.88));
-            StackLayout grid = new StackLayout
+            grid = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.Black
             };
             grid.Children.Add(hot);
-            grid.Children.Add(yesIcon);
             grid.Children.Add(noIcon);
+            grid.Children.Add(yesIcon);
             grid.Children.Add(cool);
             AbsoluteLayout.SetLayoutFlags(grid, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(grid, new Rectangle(1, 1, 1, 0.12));
 
-            AbsoluteLayout fullView = new AbsoluteLayout();
+            fullView = new AbsoluteLayout();
             fullView.Children.Add(carouselView);
             fullView.Children.Add(grid);
             carouselView.ViewChanged += GetCurrentView;
             BindingContext = new PracticeViewerModel(carouselView, list, 0);
             this.BackgroundColor = Color.Black;
             Content = fullView;
+         
 
         }
 

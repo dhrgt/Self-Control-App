@@ -27,8 +27,8 @@ namespace SelfControl.Helpers.Pages
 
         public EditDetailsPage (int id, GlobalVariables.EntryType e)
 		{
-			InitializeComponent ();
-            NavigationPage.SetHasNavigationBar(this, true);
+            NavigationPage.SetHasNavigationBar(this, false);
+            InitializeComponent ();
             Title = "Edit Details";
             EntryType = e;
             mID = id;
@@ -198,7 +198,7 @@ namespace SelfControl.Helpers.Pages
         private void populateFields()
         {
             Task.Run(async() => {
-                List<FoodItem> f = await GlobalVariables.foodItemsDatabse.QueryById(mID);
+                List<FoodItem> f = await GlobalVariables.foodItemsDatabase.QueryById(mID);
                 food = f.First();
                 dict = GlobalVariables.DeserializeDictionary(food.ANSWERS);
                 imageView.Source = ImageSource.FromStream(() => new MemoryStream(GlobalVariables.DeserializeStringToByteArray(food.IMGBYTES)));
@@ -244,9 +244,9 @@ namespace SelfControl.Helpers.Pages
                     dict[rads.Key] = rads.Value.SelectedIndex;
                 }
                 food.ANSWERS = GlobalVariables.SerializeDictionary(dict);
-                await GlobalVariables.foodItemsDatabse.SaveItemAsync(food);
+                await GlobalVariables.foodItemsDatabase.SaveItemAsync(food);
                 await Task.Run(() => { GlobalVariables.UpdateDateDiary(food.ID); });
-                await Navigation.PopAsync();
+                await Navigation.PopToRootAsync();
             }
         }
 
@@ -257,7 +257,7 @@ namespace SelfControl.Helpers.Pages
                 if (EntryType == GlobalVariables.EntryType.NEW_ENTRY)
                 {
                     DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(food.PATH);
-                    await GlobalVariables.foodItemsDatabse.DeleteItemAsync(food);
+                    await GlobalVariables.foodItemsDatabase.DeleteItemAsync(food);
                 }
             });
             return base.OnBackButtonPressed();
@@ -268,9 +268,9 @@ namespace SelfControl.Helpers.Pages
             if(EntryType == GlobalVariables.EntryType.NEW_ENTRY)
             {
                 DependencyService.Get<SelfControl.Interfaces.IFileHelper>().deleteFile(food.PATH);
-                await GlobalVariables.foodItemsDatabse.DeleteItemAsync(food);
+                await GlobalVariables.foodItemsDatabase.DeleteItemAsync(food);
             }
-            await Navigation.PopAsync();
+            await Navigation.PopToRootAsync();
         }
     }
 }

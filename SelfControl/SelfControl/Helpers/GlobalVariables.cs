@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+
 namespace SelfControl.Helpers
 {
     public class GlobalVariables
@@ -20,7 +21,7 @@ namespace SelfControl.Helpers
 
         public const double CAMERA_ROI_SIZE = 5.0;
 
-        public const int PRACTICE_NUMBER = 3;
+        public const int PRACTICE_NUMBER = 10;
 
         public const string DATABASE_NAME = "foodDB.db3";
 
@@ -33,7 +34,7 @@ namespace SelfControl.Helpers
 
         private static List<FoodItem> FoodItems = new List<FoodItem>();
 
-        public static FoodItemsDatabse foodItemsDatabse = new FoodItemsDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
+        public static FoodItemsDatabase foodItemsDatabase = new FoodItemsDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
         public static DailyReviewDatabase dailyReviewDatabase = new DailyReviewDatabase(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
         public static WeeklyReviewDatabse weeklyReviewDatabse = new WeeklyReviewDatabse(DependencyService.Get<Interfaces.IFileHelper>().GetLocalFilePath(DATABASE_NAME));
 
@@ -61,7 +62,7 @@ namespace SelfControl.Helpers
         {
             { 0, "How frequently do you eat this?" },
             { 1, "How much do you plan to eat this in the future?" },
-            { 2, "How healthy do you think this food is?" }
+            { 2, "How healthy do you think this food is?" },
         };
 
         public static Dictionary<int, string> DailyReviewQuestions = new Dictionary<int, string>()
@@ -133,7 +134,7 @@ namespace SelfControl.Helpers
             {
                 string name = tokens[i];
                 string freq = tokens[i + 1];
-                
+
                 int count = int.Parse(freq);
                 int key = int.Parse(name);
                 d.Add(key, count);
@@ -178,7 +179,7 @@ namespace SelfControl.Helpers
 
         async public static void UpdateDateDiary(int id)
         {
-            List<FoodItem> foods = await foodItemsDatabse.QueryById(id);
+            List<FoodItem> foods = await foodItemsDatabase.QueryById(id);
             FoodItem food = foods.First();
             DateTime date = food.DATE;
             if (dateDiary.ContainsKey(date.Date))
@@ -206,11 +207,11 @@ namespace SelfControl.Helpers
             }
         }
 
-        async public static void UpdateDateDiary()
+        async public static Task<Dictionary<DateTime, List<FoodItem>>> UpdateDateDiary()
         {
             dateDiary.Clear();
             FoodItems.Clear();
-            List<FoodItem> foods = await foodItemsDatabse.QueryByDateTime();
+            List<FoodItem> foods = await foodItemsDatabase.QueryByDateTime();
             FoodItems = foods;
             foreach (var food in foods)
             {
@@ -225,6 +226,7 @@ namespace SelfControl.Helpers
                     dateDiary[date.Date].Add(food);
                 }
             }
+            return dateDiary;
         }
     }
 }

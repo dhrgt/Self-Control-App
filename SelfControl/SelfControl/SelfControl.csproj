@@ -18,6 +18,7 @@
     <None Remove="Resources\health_icon.png" />
     <None Remove="Resources\heart_icon.png" />
     <None Remove="Resources\ice_button.png" />
+    <None Remove="Resources\takemorepics.png" />  
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +31,11 @@
     <EmbeddedResource Include="Resources\frequency_icon.png" />
     <EmbeddedResource Include="Resources\heart_icon.png" />
     <EmbeddedResource Include="Resources\ice_button.png" />
+    <EmbeddedResource Include="Resources\takemorepics.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.3.6" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.3.6" />
@@ -44,6 +46,10 @@
     <ProjectReference Include="..\PanCardView\PanCardView.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="SamplePicture.cs" />
+    <Compile Remove="SamplePicture.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="App.xaml.cs">
       <DependentUpon>*.xaml</DependentUpon>

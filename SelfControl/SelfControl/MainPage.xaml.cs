@@ -5,21 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace SelfControl
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
-		{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class MainPage : ContentPage
+    {
+        public MainPage()
+        {
             NavigationPage.SetHasNavigationBar(this, false);
             BackgroundColor = Color.White;
-            GlobalVariables.UpdateDateDiary();
             InitializeComponent();
+
+
 
             var title = new Label
             {
-                Text = "Self Control",
+                Text = "Self Control Game",
                 FontSize = 40,
                 FontAttributes = FontAttributes.Italic,
                 TextColor = Color.Black,
@@ -28,150 +31,73 @@ namespace SelfControl
                 Margin = new Thickness(0, 50, 0, 20)
             };
 
-            var cameraButton = new Button
-            {
-                Text = "Take a Picture",
-                BorderWidth = 1,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
-            cameraButton.Clicked += OnCameraButtonClicked;
-
-            var galleryButton = new Button
-            {
-                Text = "Visit the Gallery",
-                BorderWidth = 1,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
-            galleryButton.Clicked += OnGalleryButtonClicked;
+            //var cameraButton = new Button
+            //{
+            //    Text = "Take a Picture",
+            //    BorderWidth = 1,
+            //    HorizontalOptions = LayoutOptions.Center,
+            //    VerticalOptions = LayoutOptions.Center
+            //};
+            //cameraButton.Clicked += OnCameraButtonClicked;
 
             var mealButton = new Button
             {
-                Text = "Plan a Meal",
-                BorderWidth = 1,
+                Text = "Practice",
+                TextColor = Color.Black,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
-            };
-            mealButton.Clicked += OnPlanButtonClicked;
 
-            var reviewButton = new Button
-            {
-                Text = "Review Your Meals",
-                BorderWidth = 1,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
             };
-            reviewButton.Clicked += OnReviewButtonClicked;
 
-            Padding = Device.RuntimePlatform == Device.iOS? new Thickness(10, 20, 10, 5) : new Thickness(10, 0, 10, 5);
+
+            //mealButton.Clicked += OnPlanButtonClicked;
+
+            Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 20, 10, 5) : new Thickness(10, 0, 10, 5);
             var stack = new StackLayout();
             stack.Children.Add(title);
-            stack.Children.Add(cameraButton);
-            stack.Children.Add(galleryButton);
-            if(Helpers.Settings.StageSettings == Helpers.GlobalVariables.STAGE_2)
-            {
-                if (!Settings.FirstDailyReviewValue)
-                {
-                    Settings.LastDailyReviewValue = DateTime.Now.AddDays(-1);
-                    Settings.LastWeeklyReviewValue = DateTime.Now;
-                    Settings.FirstDailyReviewValue = true;
-                }
-                stack.Children.Add(mealButton);
-                stack.Children.Add(reviewButton);
-            }
-
-            if (Settings.FirstDailyReviewValue)
-            {
-                Task.Run(() => new Helpers.DB3ToCSV());
-                Task.Run(() => SetDailyReviews());
-                Task.Run(() => SetWeeklyReviews());
-            }
+            //stack.Children.Add(cameraButton);
+            stack.Children.Add(mealButton);
 
                 var info = new Label
-            {
-                Text = "This is the General Purpose of the App...",
-                FontSize = 10,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.EndAndExpand
-            };
-
-            this.Content = new StackLayout
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Children =
                 {
-                    stack,
-                    info
-                }
-            };
-        }
+                    Text = "This is the General Purpose of the App...",
+                    FontSize = 10,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.EndAndExpand
+                };
 
-        private void SetDailyReviews()
-        {
-            DateTime CurrentTime = DateTime.Now;
-            DateTime LastUpdated = Settings.LastDailyReviewValue;
-
-            Models.DailyReviewTable dailyReviewEntry;
-            DateTime creationDate = LastUpdated;
-            for(int i = 0; i < CurrentTime.Day - LastUpdated.Day; i++)
-            {
-                Settings.DailyReviewDayValue++;
-                creationDate = creationDate.AddDays(1);
-                dailyReviewEntry = new Models.DailyReviewTable();
-                dailyReviewEntry.DAY = Settings.DailyReviewDayValue;
-                dailyReviewEntry.DATECREATED = creationDate;
-                dailyReviewEntry.ISCOMPLETED = false;
-                Dictionary<int, int> dict = new Dictionary<int, int>(GlobalVariables.DailyReviewQuestions.Count);
-                foreach (var rads in GlobalVariables.DailyReviewQuestions)
+                this.Content = new StackLayout
                 {
-                    dict[rads.Key] = -1;
-                }
-                dailyReviewEntry.RESPONSE = GlobalVariables.SerializeDictionary(dict);
-                GlobalVariables.dailyReviewDatabase.SaveItemAsync(dailyReviewEntry);
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children =
+                    {
+                        stack,
+                        info
+                    }
+                };
             }
 
-            Settings.LastDailyReviewValue = DateTime.Now;
-        }
+            //async void OnCameraButtonClicked(object sender, EventArgs e)
+            //{
+            //    await Navigation.PushAsync(new CameraPage(), true);
+            //}
 
-        private void SetWeeklyReviews()
+            //async void OnPlanButtonClicked(object sender, EventArgs e)
+            //{
+            //    await Navigation.PushAsync(new PlanPage(), true);
+
+            //}
+
+        protected override void OnAppearing()
         {
-            DateTime CurrentTime = DateTime.Now;
-            DateTime LastUpdated = Settings.LastWeeklyReviewValue;
+            base.OnAppearing();
 
-            Models.WeeklyReviewTable weeklyReviewEntry;
-            for (int i = 6; i < CurrentTime.Day - LastUpdated.Day; i+=7)
-            {
-                Settings.WeeklyReviewDayValue++;
-                weeklyReviewEntry = new Models.WeeklyReviewTable();
-                weeklyReviewEntry.WEEK = Settings.WeeklyReviewDayValue;
-                weeklyReviewEntry.ISCOMPLETED = false;
-                GlobalVariables.weeklyReviewDatabse.SaveItemAsync(weeklyReviewEntry);
-            }
+            Navigation.PushAsync(new PlanPage(), true);
 
-            if(CurrentTime.Day - LastUpdated.Day > 7)
-                Settings.LastWeeklyReviewValue = CurrentTime;
         }
 
-        async void OnCameraButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new CameraPage(), true);
-        }
 
-        async void OnGalleryButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new GalleryPage(), true);
-        }
-
-        async void OnPlanButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new PlanPage(), true);
-        }
-
-        async void OnReviewButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ReviewPage(), true);
-        }
     }
-}
+    }
+

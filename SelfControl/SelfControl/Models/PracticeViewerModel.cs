@@ -19,7 +19,7 @@ namespace SelfControl.Models
         int ImageCount;
         private int _currentIndex;
         private int _nextIndex;
-        private bool pan;
+        //private bool pan;
         Dictionary<int, byte[]> imageFiles;
 
         public PracticeViewerModel(PanCardView.CardsView view, Dictionary<int, byte[]> imageFiles, int index)

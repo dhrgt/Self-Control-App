@@ -17,6 +17,7 @@ namespace SelfControl.DatabaseManager
         public ConnectionManager(string filePath)
         {
             database = new SQLiteAsyncConnection(filePath);
+           
         }
     }
 }
